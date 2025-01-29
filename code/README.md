@@ -1,5 +1,9 @@
 ## Description of files: 
 
+### utils: 
+* **_trend_utils.py**: functions for calculating trends
+
+  
 ### data pre-processing: 
 * **regrid_obs_data.ipynb**: regrid GPCC, GPCP, and CPC data
 * **regrid_MSWEP.py**: regrid MSWEP data
