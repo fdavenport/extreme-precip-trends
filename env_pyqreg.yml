@@ -1,0 +1,35 @@
+channels:
+ - conda-forge
+ - defaults
+dependencies:
+ - python=3.9
+ - nodejs
+ - numpy=1.26.3 
+ - pandas
+ - dask>=2022.12
+ - distributed 
+ - jupyter
+ - jupyterlab
+ - jupyter-server-proxy
+ - jupytext
+ - dask-labextension
+ - keras
+ - scikit-learn
+ - matplotlib
+ - cartopy
+ - geopandas
+ - shapely
+ - netCDF4
+ - scipy
+ - cftime
+ - xarray
+ - cf_xarray=0.7.4
+ - zarr
+ - gcsfs
+ - nc-time-axis>=1.2.0
+ - xesmf
+ - seaborn
+ - hvplot
+ - pip 
+ - pip:
+   - pyqreg
