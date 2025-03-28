@@ -8,8 +8,8 @@ warnings.filterwarnings("ignore")
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--overwrite', action='store_true') #don't overwrite unless overwrite specified
-parser.add_argument('--start', type=int, default = 1980)
-parser.add_argument('--end', type=int, default = 2024)
+parser.add_argument('--start', type=int)
+parser.add_argument('--end', type=int)
 parser.add_argument('--dataset', type=str)
 args = parser.parse_args()
 
@@ -32,7 +32,10 @@ def calc_rx1day_trends(ds):
     ds_trend["predictions"] = ["coeff", "intercept"]
     return(ds_trend)
 
-files = sorted(glob.glob(file_dir+args.dataset+"_day*.nc"))
+if dataset in ["cmip", "highres_cmip"]:
+    files = sorted(glob.glob(file_dir+"pr_day*.nc"))
+else: 
+    files = sorted(glob.glob(file_dir+"pr_day*.nc"))
 
 for f in files:
     ds = xr.open_dataset(f)
