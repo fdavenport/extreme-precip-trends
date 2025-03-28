@@ -24,14 +24,13 @@ dest_grid_with_bounds = xr.Dataset({'lon': np.arange(0+out_res/2, 360+out_res/2,
 landmask_5 = xr.open_dataset("../processed_data/gpcc_land_mask_5x5.nc").rename({"mask": "pr"})
 dest_grid_with_bounds["mask"] = landmask_5.drop_vars("time").pr
 
-histdir = "../../../../DATA/CMIP6/raw_data/historical/"+args.freq+"/"+args.var+"/"
-futdir = "../../../../DATA/CMIP6/raw_data/ssp585/"+args.freq+"/"+args.var+"/"
-outdir = "../processed_data/cmip/"
+histdir = "../../../../DATA/CMIP6/raw_data/hist-1950/"+args.freq+"/"+args.var+"/"
+futdir = "../../../../DATA/CMIP6/raw_data/highres-future/"+args.freq+"/"+args.var+"/"
+outdir = "../processed_data/highres_cmip/"
 
-#hist_files = glob.glob(histdir+"*.nc")
 
 m = args.model 
-#hist_MODELS = sorted(list(set([f.split("/")[-1].split("_")[2] for f in hist_files])- {"historical"}))
+print("model:", m)
 
 hfiles = glob.glob(histdir+"*"+m+"_*.nc")
 ffiles = glob.glob(futdir+"*"+m+"_*.nc")
@@ -51,7 +50,7 @@ for v in set(hvar+fvar):
                     break
         else:
             g = hgrids[0]    
-        outfile = outdir+args.var+"_"+args.freq+"_"+m+"_historical_ssp585_"+v+"_"+str(out_res)+"x"+str(out_res)+".nc"
+        outfile = outdir+args.var+"_"+args.freq+"_"+m+"_highres_"+v+"_"+str(out_res)+"x"+str(out_res)+".nc"
         
         if args.overwrite or not Path(outfile).exists():
             hvar_files = sorted(glob.glob(histdir+"*"+m+"_*"+v+"_"+g+"*.nc"))
@@ -59,7 +58,7 @@ for v in set(hvar+fvar):
             print(m, v, "opening files")
             try:
                 hds = xr.open_mfdataset(hvar_files, use_cftime=True)
-                hds = hds.sel(time = slice("1850-01", "2014-12"))
+                hds = hds.sel(time = slice("1950-01", "2014-12"))
                 h_success = 1
             except:
                 h_success = 0
@@ -67,7 +66,7 @@ for v in set(hvar+fvar):
             
             try:
                 fds = xr.open_mfdataset(fvar_files, use_cftime=True)
-                fds = fds.sel(time = slice("2015-01", "2100-12"))
+                fds = fds.sel(time = slice("2015-01", "2050-12"))
                 f_success = 1
             except:
                 f_success = 0

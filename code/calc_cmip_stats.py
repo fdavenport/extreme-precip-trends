@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore')
 parser = argparse.ArgumentParser()
 parser.add_argument('--start', type=int, default = 1971)
 parser.add_argument('--end', type=int, default = 2019)
-parser.add_argument('--res', type=str, default = "5")
+parser.add_argument('--res', type=str, default = "regular")
 parser.add_argument('--freq', type=str)
 
 args = parser.parse_args()
@@ -24,10 +24,20 @@ if freq == "mon":
 elif freq == "day":
     k = 360
                 
-land_mask = xr.open_dataset("../processed_data/gpcc_land_mask_"+res+"x"+res+".nc").drop_vars("time")
+land_mask = xr.open_dataset("../processed_data/gpcc_land_mask_5x5.nc").drop_vars("time")
 print("start year:", start, ", end year:", end)
 
-files = sorted(glob.glob("../processed_data/CMIP6/pr_"+freq+"*"+res+"x"+res+".nc"))
+if res == "cmip": 
+    file_dir = "cmip"
+    out_dir = "cmip_stats"
+elif res == "highres":
+    file_dir = "highres_cmip"
+    out_dir = "highres_cmip_stats"
+else:
+    print("incorrect resolution")
+    
+files = sorted(glob.glob("../processed_data/"+file_dir+"/pr_"+freq+"*5x5.nc"))
+
 
 ## loop through all available regridded files
 for f in files: 
@@ -44,13 +54,15 @@ for f in files:
             stats["mu"] = ds.pr.mean(dim = "time")
             stats["sd"] = ds.pr.std(dim = "time")
             stats["p95"] = ds.pr.quantile(q = 0.95, dim = "time")
+            stats["p98"] = ds.pr.quantile(q = 0.98, dim = "time")
             if freq == "day": 
                 stats["p99"] = ds.pr.quantile(q = 0.99, dim = "time")
+                stats["p998"] = ds.pr.quantile(q = 0.998, dim = "time")
     
             ds["pr"] = (ds.pr.dims, np.float64(ds.pr.values)) # for some reason, this is needed to compute skew with bias=False
             stats["skew"] = ds.pr.reduce(func=scipy.stats.skew, dim="time", bias = False)
     
-            stats.to_netcdf("../processed_data/cmip_stats/"+f.split("/")[-1].split(".")[0]+\
+            stats.to_netcdf("../processed_data/"+out_dir+"/"+f.split("/")[-1].split(".")[0]+\
                             "_"+str(start)+"-"+str(end)+"_stats.nc")
         else: 
             print("not enough dates")

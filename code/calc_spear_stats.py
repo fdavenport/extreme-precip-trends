@@ -17,10 +17,11 @@ freq = args.freq
 start = args.start
 end = args.end
 
-sim_keys = [".001.", ".002.", ".003.", ".004.", ".005.", ".006.", ".007.", ".009.", ".010"]
+sim_keys = ["r"+str(r)+"i1p1f1" for r in np.arange(1, 31)]
 
 for sim in sim_keys:
-    ds = xr.open_dataset("../processed_data/mesaclip/mesaclip_"+freq+"_precip_"+sim.replace(".", "")+"_5x5.nc")
+    
+    ds = xr.open_dataset("../processed_data/spear/spear_"+freq+"_precip_"+sim+"_5x5.nc")
     ds = ds.sel(time = slice(str(start)+"-01-01", str(end)+"-12-31"))
 
     stats = xr.Dataset({'lon': ds.lon,'lat': ds.lat})
@@ -29,15 +30,13 @@ for sim in sim_keys:
     stats["mu"] = ds.pr.mean(dim = "time")
     stats["sd"] = ds.pr.std(dim = "time")
     stats["p95"] = ds.pr.quantile(q = 0.95, dim = "time")
-    stats["p98"] = ds.pr.quantile(q = 0.98, dim = "time")
     
     if freq == "day":
         stats["p99"] = ds.pr.quantile(q = 0.99, dim = "time")
-        stats["p998"] = ds.pr.quantile(q = 0.998, dim = "time")
     
-    ds["pr"] = (ds.dims, np.float64(ds.pr.values)) # for some reason, this is needed to compute skew with bias=False
+    ds["pr"] = (ds.pr.dims, np.float64(ds.pr.values)) # for some reason, this is needed to compute skew with bias=False
     stats["skew"] = ds.pr.reduce(func=scipy.stats.skew, dim="time", bias = False)
-    stats.to_netcdf("../processed_data/mesaclip_stats/mesaclip_"+freq+"_"+str(start)+"-"+str(end)+"_"+sim.replace(".", "")+"_5x5_stats.nc")
-    
+    stats.to_netcdf("../processed_data/spear_stats/spear_"+freq+"_"+sim+"_"+str(start)+"-"+str(end)+"_5x5_stats.nc")
+
 
 

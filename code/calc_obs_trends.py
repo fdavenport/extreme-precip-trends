@@ -18,15 +18,8 @@ end = args.end
 q = args.q
 freq = args.freq
 
-if args.dataset == "gpcc_shifted":
-    file = "../processed_data/gpcc/gpcc_"+freq+"_precip_5x5_shifted.nc"
-    outfile = "../processed_data/gpcc_trends/gpcc_"+freq+"_"+str(start)+"-"+str(end)+"_5x5_shifted_p"+str(q).replace('.', '')+"_trend.nc"
-if args.dataset == "cpc_shifted":
-    file = "../processed_data/cpc/cpc_"+freq+"_precip_"+res+"x"+res+"_shifted.nc"
-    outfile = "../processed_data/cpc_trends/cpc_"+freq+"_"+str(start)+"-"+str(end)+"_5x5_shifted_p"+str(q).replace('.', '')+"_trend.nc"
-if args.dataset in ["gpcp", "mswep", "cpc", "gpcc"]:
-    file = "../processed_data/"+args.dataset+"/"+args.dataset+"_"+freq+"_precip_5x5.nc"
-    outfile = "../processed_data/"+args.dataset+"_trends/"+args.dataset+\
+file = "../processed_data/"+args.dataset+"/"+args.dataset+"_"+freq+"_precip_5x5.nc"
+outfile = "../processed_data/"+args.dataset+"_trends/"+args.dataset+\
                "_"+freq+"_"+str(start)+"-"+str(end)+"_5x5_p"+str(q).replace('.', '')+"_trend.nc"
 
 

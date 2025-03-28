@@ -3,6 +3,16 @@ from pathlib import Path
 import glob
 import xarray as xr
 import xesmf as xe
+from dask.distributed import Client
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--overwrite', action='store_true') #don't overwrite unless overwrite specified
+args = parser.parse_args()
+
+if __name__ == "__main__":
+    client=Client(n_workers=1)
+    client
 
 # define destination grid
 out_res = 5
@@ -26,7 +36,7 @@ mesa_grid_with_bounds = xr.Dataset({'lon': lf.lon,
                   'lon_b': np.linspace(0, 360, 1441), 
                    'lat_b': np.linspace(-90, 90, 721),
                           })
-mesa_grid_with_bounds["mask"] = xr.where(lf.LANDFRAC > 0.1, 1, 0)
+mesa_grid_with_bounds["mask"] = xr.where(lf.LANDFRAC >= 0.05, 1, 0)
 ## define regridder: 
 regridder = xe.Regridder(mesa_grid_with_bounds, dest_grid_with_bounds, method='conservative_normed', periodic=True)
 
@@ -34,11 +44,10 @@ regridder = xe.Regridder(mesa_grid_with_bounds, dest_grid_with_bounds, method='c
 sim_keys = [".001.", ".002.", ".003.", ".004.", ".005.", ".006.", ".007.", ".009.", ".010"]
 
 for sim in sim_keys:
-    files = sorted(glob.glob(file_dir+"/*"+sim+"*.nc"))
-    ds = xr.open_mfdataset(files)
-    
-    # apply land mask
-    ds = xr.where(lf.LANDFRAC > 0.1, ds.pr, np.nan).to_dataset(name = "pr")
-    
-    ds_regrid = regridder(ds, keep_attrs=True)
-    ds_regrid.to_netcdf("../processed_data/mesaclip/mesaclip_day_precip_"+sim.replace(".", "")+"_5x5.nc")
+    outfile = "../processed_data/mesaclip/mesaclip_day_precip_"+sim.replace(".", "")+"_5x5.nc"
+    if args.overwrite or not Path(outfile).exists():
+        files = sorted(glob.glob(file_dir+"/*"+sim+"*.nc"))
+        ds = xr.open_mfdataset(files, chunks={"time": 1})
+        
+        ds_regrid = regridder(ds, keep_attrs=True)
+        ds_regrid.to_netcdf(outfile)

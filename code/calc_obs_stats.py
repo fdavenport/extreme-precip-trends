@@ -15,15 +15,8 @@ freq = args.freq
 start = args.start
 end = args.end
 
-if args.dataset == "gpcc_shifted":
-    file = "../processed_data/gpcc/gpcc_"+freq+"_precip_5x5_shifted.nc"
-    outfile = "../processed_data/gpcc_stats/gpcc_"+freq+"_"+str(start)+"-"+str(end)+"_5x5_shifted_stats.nc"
-if args.dataset == "cpc_shifted":
-    file = "../processed_data/cpc/cpc_"+freq+"_precip_"+res+"x"+res+"_shifted.nc"
-    outfile = "../processed_data/cpc_stats/cpc_"+freq+"_"+str(start)+"-"+str(end)+"_5x5_shifted_stats.nc"
-if args.dataset in ["gpcp", "mswep", "cpc", "gpcc"]:
-    file = "../processed_data/"+args.dataset+"/"+args.dataset+"_"+freq+"_precip_5x5.nc"
-    outfile = "../processed_data/"+args.dataset+"_stats/"+args.dataset+\
+file = "../processed_data/"+args.dataset+"/"+args.dataset+"_"+freq+"_precip_5x5.nc"
+outfile = "../processed_data/"+args.dataset+"_stats/"+args.dataset+\
                "_"+freq+"_"+str(start)+"-"+str(end)+"_5x5_stats.nc"
     
 ds = xr.open_dataset(file)
@@ -35,9 +28,11 @@ stats = xr.Dataset({'lon': ds.lon,'lat': ds.lat})
 stats["mu"] = ds.pr.mean(dim = "time")
 stats["sd"] = ds.pr.std(dim = "time")
 stats["p95"] = ds.pr.quantile(q = 0.95, dim = "time")
+stats["p98"] = ds.pr.quantile(q = 0.98, dim = "time")
 
 if freq == "day":
     stats["p99"] = ds.pr.quantile(q = 0.99, dim = "time")
+    stats["p998"] = ds.pr.quantile(q = 0.998, dim = "time")
     
 ds["pr"] = (ds.dims, np.float64(ds.pr.values)) # for some reason, this is needed to compute skew with bias=False
 stats["skew"] = ds.pr.reduce(func=scipy.stats.skew, dim="time", bias = False)

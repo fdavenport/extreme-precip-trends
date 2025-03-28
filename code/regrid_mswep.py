@@ -48,7 +48,7 @@ if args.overwrite or not Path(outfile).exists():
     mswep["lon"] = np.round(mswep.lon, 2)
     mswep["lat"] = np.round(mswep.lat, 2)
 
-    mswep = xr.where(landmask1.landseamask < 90, mswep.pr, np.nan).to_dataset(name="pr")
+    mswep = xr.where(landmask1.landseamask <= 95, mswep.pr, np.nan).to_dataset(name="pr")
 
     if i==0: 
         i=1
