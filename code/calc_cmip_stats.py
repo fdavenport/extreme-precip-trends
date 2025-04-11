@@ -61,9 +61,13 @@ for f in files:
     
             ds["pr"] = (ds.pr.dims, np.float64(ds.pr.values)) # for some reason, this is needed to compute skew with bias=False
             stats["skew"] = ds.pr.reduce(func=scipy.stats.skew, dim="time", bias = False)
+
+            m = f.split("/")[-1].split("_")[2]
+            v = f.split("/")[-1].split("_")[5]
+            f1 = "../processed_data/"+out_dir+"/"+res+"_"+freq+"-p"+str(q).replace('.', '')+"_"+m+"_"+v+"_"+\
+                 str(start)+"-"+str(end)+"_5x5_stats.nc"
     
-            stats.to_netcdf("../processed_data/"+out_dir+"/"+f.split("/")[-1].split(".")[0]+\
-                            "_"+str(start)+"-"+str(end)+"_stats.nc")
+            stats.to_netcdf(f1)
         else: 
             print("not enough dates")
     except: 

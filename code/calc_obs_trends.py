@@ -20,7 +20,7 @@ freq = args.freq
 
 file = "../processed_data/"+args.dataset+"/"+args.dataset+"_"+freq+"_precip_5x5.nc"
 outfile = "../processed_data/"+args.dataset+"_trends/"+args.dataset+\
-               "_"+freq+"_"+str(start)+"-"+str(end)+"_5x5_p"+str(q).replace('.', '')+"_trend.nc"
+               "_"+freq+"-p"+str(q).replace('.', '')+"_"+str(start)+"-"+str(end)+"_5x5_trend.nc"
 
 
 ds = xr.open_dataset(file)

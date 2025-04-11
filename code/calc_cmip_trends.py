@@ -40,8 +40,10 @@ files = sorted(glob.glob("../processed_data/"+file_dir+"/pr_"+freq+"*5x5.nc"))
 ## loop through all available regridded files
 for f in files: 
     ## outfiles
-    f1 = "../processed_data/"+out_dir+"/"+f.split("/")[-1].split(".")[0]+"_"+str(start)+"-"+str(end)+"_p"+str(q).replace('.', '')+"_trend.nc"
-    
+    m = f.split("/")[-1].split("_")[2]
+    v = f.split("/")[-1].split("_")[5]
+    f1 = "../processed_data/"+out_dir+"/"+res+"_"+freq+"-p"+str(q).replace('.', '')+"_"+m+"_"+v+"_"+\
+         str(start)+"-"+str(end)+"_5x5_trend.nc"
     ## check whether trends have already been calculated 
     if args.overwrite or not Path(f1).exists():
         print("reading", f) 

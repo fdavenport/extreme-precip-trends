@@ -36,7 +36,8 @@ for sim in sim_keys:
     
     ds["pr"] = (ds.pr.dims, np.float64(ds.pr.values)) # for some reason, this is needed to compute skew with bias=False
     stats["skew"] = ds.pr.reduce(func=scipy.stats.skew, dim="time", bias = False)
-    stats.to_netcdf("../processed_data/spear_stats/spear_"+freq+"_"+sim+"_"+str(start)+"-"+str(end)+"_5x5_stats.nc")
+    stats.to_netcdf("../processed_data/spear_stats/spear_"+freq+"-p"+str(q).replace('.', '')+"_"+sim+"_"+str(start)+"-"+str(end)+\
+                     "_5x5_stats.nc")
 
 
 

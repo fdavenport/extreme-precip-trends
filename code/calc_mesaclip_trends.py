@@ -28,6 +28,7 @@ for sim in sim_keys:
     ds = ds.sel(time = slice(str(start)+"-01-01", str(end)+"-12-31"))
 
     trends = _trend_utils.quantiletrends_xr(ds, quant = q)
-    trends.to_netcdf("../processed_data/mesaclip_trends/mesaclip_"+freq+"_"+str(start)+"-"+str(end)+"_"+sim.replace(".", "")+"_5x5_p"+str(q).replace('.', '')+"_trend.nc")
+    trends.to_netcdf("../processed_data/mesaclip_trends/mesaclip_"+freq+"-p"+str(q).replace('.', '')+"_"+sim.replace(".", "")+\
+                     "_"+str(start)+"-"+str(end)+"_5x5_trend.nc")
 
 

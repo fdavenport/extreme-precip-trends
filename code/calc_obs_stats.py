@@ -17,7 +17,7 @@ end = args.end
 
 file = "../processed_data/"+args.dataset+"/"+args.dataset+"_"+freq+"_precip_5x5.nc"
 outfile = "../processed_data/"+args.dataset+"_stats/"+args.dataset+\
-               "_"+freq+"_"+str(start)+"-"+str(end)+"_5x5_stats.nc"
+               "_"+freq+"-p095_"+str(start)+"-"+str(end)+"_5x5_stats.nc"
     
 ds = xr.open_dataset(file)
 ds = ds.sel(time = slice(str(start)+"-01-01", str(end)+"-12-31"))
