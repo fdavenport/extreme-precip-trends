@@ -91,15 +91,17 @@ for v in set(hvar+fvar):
                 except: 
                     print("error opening ", m, "sftlf file")
                     lf_success = 0
-                
+
             ## only regrid if all files were successfully opened 
             if h_success == 1 and f_success == 1 and lf_success == 1:
-                ds = xr.concat([hds, fds], dim = "time")
-                ds["mask"] = lf
+                hds["mask"] = lf
+                fds["mask"] = lf
                 try:
-                    regridder = xe.Regridder(ds.isel(time = 0), dest_grid_with_bounds, 
+                    regridder = xe.Regridder(hds.isel(time = 0), dest_grid_with_bounds, 
                                              method = "conservative_normed", periodic=True)
-                    ds_regrid = regridder(ds.pr, keep_attrs=True)
+                    hds_regrid = regridder(hds.pr, keep_attrs=True)
+                    fds_regrid = regridder(fds.pr, keep_attrs=True)
+                    ds_regrid = xr.concat([hds_regrid, fds_regrid], dim = "time")
                     ds_regrid.to_netcdf(outfile)
                     print(m, v, g, "was regridded")
                 except:
