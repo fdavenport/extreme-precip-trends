@@ -25,7 +25,7 @@ for start_year in {1950..1975..5}; do
     
     if [ "$start_year" -lt 1975 ]; then
         # calculate 45-year trends
-        #python -u ./calc_rx1day.py --start=$start_year --end=$((start_year + 41)) --dataset="regen"
+        python -u ./calc_rx1day.py --start=$start_year --end=$((start_year + 41)) --dataset="regen"
         #python -u ./calc_rx1day.py --start=$start_year --end=$((start_year + 41)) --dataset="cmip"
         #python -u ./calc_rx1day.py --start=$start_year --end=$((start_year + 41)) --dataset="highres_cmip"
         #python -u ./calc_rx1day.py --start=$start_year --end=$((start_year + 41)) --dataset="mesaclip"
