@@ -50,7 +50,7 @@ for v in set(hvar+fvar):
                     break
         else:
             g = hgrids[0]    
-        outfile = outdir+args.var+"_"+args.freq+"_"+m+"_highres_"+v+"_"+str(out_res)+"x"+str(out_res)+".nc"
+        outfile = outdir+"cmip_"+args.freq+"_precip_"+m+v+"_"+str(out_res)+"x"+str(out_res)+".nc"
         
         if args.overwrite or not Path(outfile).exists():
             hvar_files = sorted(glob.glob(histdir+"*"+m+"_*"+v+"_"+g+"*.nc"))

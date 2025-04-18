@@ -51,7 +51,7 @@ for v in set(hvar+fvar):
                     break
         else:
             g = hgrids[0]    
-        outfile = outdir+args.var+"_"+args.freq+"_"+m+"_historical_ssp585_"+v+"_"+str(out_res)+"x"+str(out_res)+".nc"
+        outfile = outdir+"cmip_"+args.freq+"_precip_"+m+"_"+v+"_"+str(out_res)+"x"+str(out_res)+".nc"
         
         if args.overwrite or not Path(outfile).exists():
             hvar_files = sorted(glob.glob(histdir+"*"+m+"_*"+v+"_"+g+"*.nc"))
@@ -75,7 +75,11 @@ for v in set(hvar+fvar):
 
             try: 
                 lf = xr.open_dataset(glob.glob("/davenport-scratch/DATA/CMIP6/raw_data/sftlf/sftlf_fx_"+m+"_*"+g+"*.nc")[0])
-                lf = xr.where(lf.sftlf >= 5, 1, 0)
+                ## some files are 0-100, some are 0-1
+                if lf.sftlf.max().values == 1: 
+                    lf = xr.where(lf.sftlf >= 0.05, 1, 0)
+                elif lf.sftlf.max().values == 100: 
+                    lf = xr.where(lf.sftlf >= 5, 1, 0)
                 lf_success = 1
                 if "type" in lf.coords:
                     lf = lf.drop_vars("type")
