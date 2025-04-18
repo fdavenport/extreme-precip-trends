@@ -33,6 +33,10 @@ for f in files:
     ds = xr.open_dataset(f)
     ds = ds.sel(time = slice(str(start)+"-01-01", str(end)+"-12-31"))
 
+    trends = _trend_utils.quantiletrends_xr(ds, quant = q)
+    trends.to_netcdf(trend_dir+f.split("/")[-1].replace("mon", "mon-p095").replace("_5x5.nc",
+                                                                                     "_"+str(start)+"-"+str(end)+"_trend.nc"))
+
     stats = xr.Dataset({'lon': ds.lon,'lat': ds.lat})
     # stats to calc: mean, s.d., p95, skewness
     stats["mu"] = ds.pr.mean(dim = "time")
@@ -45,8 +49,5 @@ for f in files:
     stats.to_netcdf(stats_dir+f.split("/")[-1].replace("mon", "mon-p095").replace("_5x5.nc", 
                                                                                   "_"+str(start)+"-"+str(end)+"_stats.nc"))
 
-    trends = _trend_utils.quantiletrends_xr(ds, quant = q)
-    trends.to_netcdf(trend_dir+f.split("/")[-1].replace("mon", "mon-p095").replace("_5x5.nc",
-                                                                                     "_"+str(start)+"-"+str(end)+"_trend.nc"))
 
 
