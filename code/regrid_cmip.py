@@ -94,18 +94,19 @@ for v in set(hvar+fvar):
 
             ## only regrid if all files were successfully opened 
             if h_success == 1 and f_success == 1 and lf_success == 1:
-                hds["mask"] = lf
-                fds["mask"] = lf
-                try:
-                    regridder = xe.Regridder(hds.isel(time = 0), dest_grid_with_bounds, 
-                                             method = "conservative_normed", periodic=True)
-                    hds_regrid = regridder(hds.pr, keep_attrs=True)
-                    fds_regrid = regridder(fds.pr, keep_attrs=True)
-                    ds_regrid = xr.concat([hds_regrid, fds_regrid], dim = "time")
-                    ds_regrid.to_netcdf(outfile)
-                    print(m, v, g, "was regridded")
-                except:
-                    print("error regridding ", m, v)
+                if (abs(hds.lat.values - fds.lat.values).sum() == 0) and (abs(hds.lon.values - fds.lon.values).sum() == 0):
+                    ds = xr.concat([hds, fds], dim = "time")
+                    ds["mask"] = lf
+                    try:
+                        regridder = xe.Regridder(ds.isel(time = 0), dest_grid_with_bounds, 
+                                                 method = "conservative_normed", periodic=True)
+                        ds_regrid = regridder(ds.pr, keep_attrs=True)
+                        ds_regrid.to_netcdf(outfile)
+                        print(m, v, g, "was regridded")
+                    except:
+                        print("error regridding ", m, v)
+                else: 
+                    print("lat and lon values don't match between simulations", m, v)
         
         else:
             print("skipping", m, v, "- file already exists")
