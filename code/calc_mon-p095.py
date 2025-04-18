@@ -34,7 +34,7 @@ for f in files:
     ds = ds.sel(time = slice(str(start)+"-01-01", str(end)+"-12-31"))
 
     trends = _trend_utils.quantiletrends_xr(ds, quant = q)
-    trends.to_netcdf(trend_dir+f.split("/")[-1].replace("mon", "mon-p095").replace("_5x5.nc",
+    trends.to_netcdf(trend_dir+f.split("/")[-1].replace("mon", "mon-p095").replace("precip", "").replace("_5x5.nc",
                                                                                      "_"+str(start)+"-"+str(end)+"_trend.nc"))
 
     stats = xr.Dataset({'lon': ds.lon,'lat': ds.lat})
@@ -46,7 +46,7 @@ for f in files:
     ds["pr"] = (ds.dims, np.float64(ds.pr.values)) # for some reason, this is needed to compute skew with bias=False
     stats["skew"] = ds.pr.reduce(func=scipy.stats.skew, dim="time", bias = False)
 
-    stats.to_netcdf(stats_dir+f.split("/")[-1].replace("mon", "mon-p095").replace("_5x5.nc", 
+    stats.to_netcdf(stats_dir+f.split("/")[-1].replace("mon", "mon-p095").replace("precip", "").replace("_5x5.nc", 
                                                                                   "_"+str(start)+"-"+str(end)+"_stats.nc"))
 
 
