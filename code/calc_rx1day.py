@@ -32,9 +32,7 @@ def calc_rx1day_trends(ds):
     ds_trend["predictions"] = ["coeff", "intercept"]
     return(ds_trend)
 
-if args.dataset in ["cmip", "highres_cmip"]:
-    files = sorted(glob.glob(file_dir+"pr_day*.nc"))
-elif args.dataset in ["mswep", "cpc", "regen"]:
+if args.dataset in ["mswep", "cpc", "cpc-shift", "regen"]:
     files = [file_dir+args.dataset+"_day_precip_5x5.nc"]
 else:
     files = sorted(glob.glob(file_dir+args.dataset+"_day*.nc"))
