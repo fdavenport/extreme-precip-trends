@@ -11,7 +11,7 @@
 
 cd /davenport-scratch/fvdav22/projects/extreme-precip-trends
 eval "$(conda shell.bash hook)"
-conda activate ./envs
+conda activate ./envs_pyqreg
 cd code
 
 python -u ./calc_mon-p095.py --start=1979 --end=2020 --dataset="gpcc" -q=0.95
