@@ -46,7 +46,7 @@ for f in files:
     stats = calc_rx1day_stats(ds_rx1day)
     ds_trend = calc_rx1day_trends(ds_rx1day)
 
-    stats.to_netcdf(stats_dir+f.split("/")[-1].replace("day", "rx1day").replace("_5x5", "").replace(".nc", "_"+str(start)+"-"+str(end)+"_5x5_stats.nc"))
-    ds_trend.to_netcdf(trend_dir+f.split("/")[-1].replace("day", "rx1day").replace("_5x5", "").replace(".nc", "_"+str(start)+"-"+str(end)+"_5x5_trend.nc"))
+    stats.to_netcdf(stats_dir+f.split("/")[-1].replace("day", "rx1day").replace("precip", "").replace("_5x5", "").replace(".nc", "_"+str(start)+"-"+str(end)+"_stats.nc"))
+    ds_trend.to_netcdf(trend_dir+f.split("/")[-1].replace("day", "rx1day").replace("precip", "").replace("_5x5", "").replace(".nc", "_"+str(start)+"-"+str(end)+"_trend.nc"))
 
 
