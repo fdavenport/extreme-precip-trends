@@ -35,7 +35,7 @@ else:
 ## calculate trends for regridded data
 land_mask = xr.open_dataset("../processed_data/gpcc_land_mask_5x5.nc").drop_vars("time")
 print("frequency", freq)
-files = sorted(glob.glob("../processed_data/"+file_dir+"/pr_"+freq+"*5x5.nc"))
+files = sorted(glob.glob("../processed_data/"+file_dir+"/"+res+"_"+freq+"_*5x5.nc"))
 
 ## loop through all available regridded files
 for f in files: 
