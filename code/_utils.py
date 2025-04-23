@@ -27,4 +27,4 @@ def quantiletrends_xr(ds, quant):
     trend_dat["predictions"] = ["coeff", "intercept", "pval", "coeff_ci_low", "coeff_ci_high"]
     
     return trend_dat
-    
+

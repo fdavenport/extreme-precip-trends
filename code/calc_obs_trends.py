@@ -2,7 +2,7 @@ import numpy as np
 import xarray as xr
 import glob
 import argparse
-import _trend_utils
+import _utils
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--start', type=int, default = 1971)

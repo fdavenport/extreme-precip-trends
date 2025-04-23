@@ -2,7 +2,7 @@ import xarray as xr
 import glob
 import argparse
 from pathlib import Path
-import _trend_utils
+import _utils
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--overwrite', action='store_true') #don't overwrite unless overwrite specified

@@ -3,7 +3,7 @@ import numpy as np
 import glob
 import argparse 
 import scipy
-import _trend_utils
+import _utils
 
 import warnings
 warnings.filterwarnings("ignore")
