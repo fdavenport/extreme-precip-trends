@@ -29,5 +29,5 @@ done
 python -u ./calc_cmip_trends.py --start=1979 --end=2020 --q=0.95 --freq="mon" --res="cmip"
 python -u ./calc_cmip_stats.py --start=1979 --end=2020 --freq="mon" --res="cmip"
 
-python -u ./calc_cmip_trends.py --start=1979 --end=2020 --q=0.95 --freq="mon" --res="cmip"
-python -u ./calc_cmip_stats.py --start=1979 --end=2020 --freq="mon" --res="cmip"
+python -u ./calc_cmip_trends.py --start=1979 --end=2024 --q=0.95 --freq="mon" --res="cmip"
+python -u ./calc_cmip_stats.py --start=1979 --end=2024 --freq="mon" --res="cmip"

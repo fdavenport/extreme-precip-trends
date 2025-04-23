@@ -2,6 +2,7 @@ import numpy as np
 import scipy
 import xarray as xr
 import glob
+from pathlib import Path
 import argparse
 
 import warnings
@@ -12,6 +13,7 @@ parser.add_argument('--start', type=int, default = 1971)
 parser.add_argument('--end', type=int, default = 2019)
 parser.add_argument('--res', type=str, default = "regular")
 parser.add_argument('--freq', type=str)
+parser.add_argument('--overwrite', action='store_true') #don't overwrite unless overwrite specified
 
 args = parser.parse_args()
 
@@ -30,21 +32,24 @@ print("start year:", start, ", end year:", end)
 if res == "cmip": 
     file_dir = "cmip"
     out_dir = "cmip_stats"
-elif res == "highres":
-    file_dir = "highres_cmip"
-    out_dir = "highres_cmip_stats"
+elif res == "highres-cmip":
+    file_dir = "highres-cmip"
+    out_dir = "highres-cmip_stats"
 else:
     print("incorrect resolution")
     
 files = sorted(glob.glob("../processed_data/"+file_dir+"/"+res+"_"+freq+"_*5x5.nc"))
 
-
 ## loop through all available regridded files
 for f in files: 
     print(f)
-    try:
+    m = f.split("/")[-1].split("_")[3]
+    v = f.split("/")[-1].split("_")[4]
+    f1 = "../processed_data/"+out_dir+"/"+res+"_"+freq+"-p"+str(q).replace('.', '')+"_"+m+"_"+v+"_"+\
+             str(start)+"-"+str(end)+"_stats.nc"
+    if args.overwrite or not Path(f1).exists():
         ds = xr.open_dataset(f)
-        ds = ds.where(land_mask.mask == 1).sel(lat = slice(-60, 90))  ## apply land mask
+        ds = ds.where(land_mask.mask == 1)  ## apply land mask
         ds = ds.sel(time = slice(str(start)+"-01", str(end)+"-12"))
         
         if len(ds.time) >= (end-start+1)*k: 
@@ -54,21 +59,12 @@ for f in files:
             stats["mu"] = ds.pr.mean(dim = "time")
             stats["sd"] = ds.pr.std(dim = "time")
             stats["p95"] = ds.pr.quantile(q = 0.95, dim = "time")
-            stats["p98"] = ds.pr.quantile(q = 0.98, dim = "time")
-            if freq == "day": 
-                stats["p99"] = ds.pr.quantile(q = 0.99, dim = "time")
-                stats["p998"] = ds.pr.quantile(q = 0.998, dim = "time")
     
             ds["pr"] = (ds.pr.dims, np.float64(ds.pr.values)) # for some reason, this is needed to compute skew with bias=False
             stats["skew"] = ds.pr.reduce(func=scipy.stats.skew, dim="time", bias = False)
 
-            m = f.split("/")[-1].split("_")[2]
-            v = f.split("/")[-1].split("_")[5]
-            f1 = "../processed_data/"+out_dir+"/"+res+"_"+freq+"-p"+str(q).replace('.', '')+"_"+m+"_"+v+"_"+\
-                 str(start)+"-"+str(end)+"_5x5_stats.nc"
-    
             stats.to_netcdf(f1)
         else: 
             print("not enough dates")
-    except: 
-        print("error calculating stats")
+    else:
+        print("file already exists")
