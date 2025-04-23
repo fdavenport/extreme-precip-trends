@@ -45,7 +45,7 @@ for f in files:
     print(f)
     m = f.split("/")[-1].split("_")[3]
     v = f.split("/")[-1].split("_")[4]
-    f1 = "../processed_data/"+out_dir+"/"+res+"_"+freq+"-p"+str(q).replace('.', '')+"_"+m+"_"+v+"_"+\
+    f1 = "../processed_data/"+out_dir+"/"+res+"_"+freq+"-p095_"+m+"_"+v+"_"+\
              str(start)+"-"+str(end)+"_stats.nc"
     if args.overwrite or not Path(f1).exists():
         ds = xr.open_dataset(f)
