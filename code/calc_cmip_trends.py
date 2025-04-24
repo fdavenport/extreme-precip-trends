@@ -52,7 +52,7 @@ for f in files:
         ds = ds.sel(time = slice(str(start)+"-01", str(end)+"-12"))
 
         if len(ds.time) >= (end-start+1)*k: 
-            trends = _trend_utils.quantiletrends_xr(ds, quant = q)
+            trends = _utils.quantiletrends_xr(ds, quant = q)
             trends.to_netcdf(f1)
         else:
             print("not enough dates")
