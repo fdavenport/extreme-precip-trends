@@ -39,6 +39,7 @@ else:
 
 for f in files:
     ds = xr.open_dataset(f)
+    print(f)
     ds_rx1day = ds.groupby(ds.time.dt.year).max(dim = "time")
     ds_rx1day.to_netcdf(f.replace("day", "rx1day"))
 
