@@ -15,6 +15,8 @@ args = parser.parse_args()
 
 start = args.start
 end = args.end
+print("start:", str(start))
+print("end:", str(end))
 
 file_dir = "../processed_data/"+args.dataset+"/"
 stats_dir = "../processed_data/"+args.dataset+"_stats/"
