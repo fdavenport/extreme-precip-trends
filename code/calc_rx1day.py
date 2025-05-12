@@ -56,7 +56,7 @@ for f in files:
         ds_rx1day = ds_rx1day.sel(year = slice(start, end))
         
         stats_file = stats_dir+f.split("/")[-1].replace("day", "rx1day").replace("_precip", "").replace("_5x5", "").replace(".nc", "_"+str(start)+"-"+str(end)+"_stats.nc")
-        trend_files = trend_dir+f.split("/")[-1].replace("day", "rx1day").replace("_precip", "").replace("_5x5", "").replace(".nc", "_"+str(start)+"-"+str(end)+"_trend.nc")
+        trend_file = trend_dir+f.split("/")[-1].replace("day", "rx1day").replace("_precip", "").replace("_5x5", "").replace(".nc", "_"+str(start)+"-"+str(end)+"_trend.nc")
         
         if args.overwrite or not Path(stats_file).exists():
             stats = calc_rx1day_stats(ds_rx1day)
