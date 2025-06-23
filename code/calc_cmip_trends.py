@@ -2,7 +2,7 @@ import xarray as xr
 import glob
 import argparse
 from pathlib import Path
-import _utils
+import _pyqreg_utils
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--overwrite', action='store_true') #don't overwrite unless overwrite specified
@@ -52,7 +52,7 @@ for f in files:
         ds = ds.sel(time = slice(str(start)+"-01", str(end)+"-12"))
 
         if len(ds.time) >= (end-start+1)*k: 
-            trends = _utils.quantiletrends_xr(ds, quant = q)
+            trends = _pyqreg_utils.quantiletrends_xr(ds, quant = q)
             trends.to_netcdf(f1)
         else:
             print("not enough dates")

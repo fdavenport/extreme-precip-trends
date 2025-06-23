@@ -2,7 +2,7 @@ import numpy as np
 import xarray as xr
 import glob
 import argparse
-import _utils
+import _pyqreg_utils
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -27,7 +27,7 @@ for sim in sim_keys:
     ds = xr.open_dataset("../processed_data/mesaclip/mesaclip_"+freq+"_precip_"+sim.replace(".", "")+"_5x5.nc")
     ds = ds.sel(time = slice(str(start)+"-01-01", str(end)+"-12-31"))
 
-    trends = _trend_utils.quantiletrends_xr(ds, quant = q)
+    trends = _pyqreg_utils.quantiletrends_xr(ds, quant = q)
     trends.to_netcdf("../processed_data/mesaclip_trends/mesaclip_"+freq+"-p"+str(q).replace('.', '')+"_"+sim.replace(".", "")+\
                      "_"+str(start)+"-"+str(end)+"_5x5_trend.nc")
 
