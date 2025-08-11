@@ -3,7 +3,7 @@ import numpy as np
 import glob
 import argparse 
 import scipy
-import _utils
+import _pyqreg_utils
 
 import warnings
 warnings.filterwarnings("ignore")
