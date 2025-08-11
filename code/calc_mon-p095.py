@@ -33,7 +33,7 @@ for f in files:
     ds = xr.open_dataset(f)
     ds = ds.sel(time = slice(str(start)+"-01-01", str(end)+"-12-31"))
 
-    trends = _utils.quantiletrends_xr(ds, quant = q)
+    trends = _pyqreg_utils.quantiletrends_xr(ds, quant = q)
     trends.to_netcdf(trend_dir+f.split("/")[-1].replace("mon", "mon-p095").replace("precip", "").replace("_5x5.nc",
                                                                                      "_"+str(start)+"-"+str(end)+"_trend.nc"))
 
