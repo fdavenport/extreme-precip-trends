@@ -19,6 +19,8 @@ args = parser.parse_args()
 start = args.start
 end = args.end
 q = args.q
+print("start:", str(start))
+print("end:", str(end))
 
 file_dir = "../processed_data/"+args.dataset+"/"
 stats_dir = "../processed_data/"+args.dataset+"_stats/"
@@ -31,10 +33,11 @@ else:
 
 for f in files:
     ds = xr.open_dataset(f)
+    print(f)
     ds = ds.sel(time = slice(str(start)+"-01-01", str(end)+"-12-31"))
 
     trends = _pyqreg_utils.quantiletrends_xr(ds, quant = q)
-    trends.to_netcdf(trend_dir+f.split("/")[-1].replace("mon", "mon-p095").replace("precip", "").replace("_5x5.nc",
+    trends.to_netcdf(trend_dir+f.split("/")[-1].replace("mon", "mon-p095").replace("precip_", "").replace("_5x5.nc",
                                                                                      "_"+str(start)+"-"+str(end)+"_trend.nc"))
 
     stats = xr.Dataset({'lon': ds.lon,'lat': ds.lat})
@@ -43,10 +46,10 @@ for f in files:
     stats["sd"] = ds.pr.std(dim = "time")
     stats["p95"] = ds.pr.quantile(q = 0.95, dim = "time")
     
-    ds["pr"] = (ds.dims, np.float64(ds.pr.values)) # for some reason, this is needed to compute skew with bias=False
+    ds["pr"] = (ds.pr.dims, np.float64(ds.pr.values)) # for some reason, this is needed to compute skew with bias=False
     stats["skew"] = ds.pr.reduce(func=scipy.stats.skew, dim="time", bias = False)
 
-    stats.to_netcdf(stats_dir+f.split("/")[-1].replace("mon", "mon-p095").replace("precip", "").replace("_5x5.nc", 
+    stats.to_netcdf(stats_dir+f.split("/")[-1].replace("mon", "mon-p095").replace("precip_", "").replace("_5x5.nc", 
                                                                                   "_"+str(start)+"-"+str(end)+"_stats.nc"))
 
 
