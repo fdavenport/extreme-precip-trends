@@ -24,11 +24,11 @@ for start_year in $(seq 1950 1990); do
         python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="mesaclip"
         python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="spear"
     
-    if [ "$end_year" -le 2016]; then
+    if [ "$end_year" -le 2016 ]; then
        python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="regen"
     fi
     
-    if [ "$start_year" -ge 1979]; then
+    if [ "$start_year" -ge 1979 ]; then
        python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="cpc"
        python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="mswep"
     fi
