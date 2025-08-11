@@ -6,7 +6,7 @@
 #SBATCH --mail-user=f.davenport@colostate.edu
 #SBATCH --ntasks=32
 #SBATCH --time=40:00:00
-#SBATCH -p dav+coe
+#SBATCH -p dav_all,coe_all
 
 
 cd /davenport-scratch/fvdav22/projects/extreme-precip-trends
