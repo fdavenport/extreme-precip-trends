@@ -15,7 +15,7 @@ eval "$(conda shell.bash hook)"
 conda activate ./envs_pyqreg
 cd code
 
-start_year = $((SLURM_ARRAY_TASK_ID+1930))
+start_year=$((SLURM_ARRAY_TASK_ID+1930))
 
 for end_year in $(seq $((start_year + 30)) 2020); do
     
