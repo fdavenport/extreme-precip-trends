@@ -7,7 +7,6 @@
 #SBATCH --ntasks=4
 #SBATCH --time=3:00:00
 #SBATCH --array=0-40%1
-#SBATCH -p dav_all
 #SBATCH --nodelist=davenport-cpu[1]
 
 
