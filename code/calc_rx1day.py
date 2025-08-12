@@ -41,22 +41,27 @@ else:
     files = sorted(glob.glob(file_dir+args.dataset+"_day*.nc"))
 
 for f in files:
-    ds = xr.open_dataset(f)
-    print(f)
-    
-    ## check for enough dates
-    if len(ds.sel(time = slice(str(start)+"-01", str(end)+"-12")).time) >= (end-start+1)*360:
-        
-        ds_rx1day = ds.groupby(ds.time.dt.year).max(dim = "time")
-        
-        if args.overwrite or not Path(f.replace("day", "rx1day")).exists():
-            ds_rx1day.to_netcdf(f.replace("day", "rx1day"))
+    rx1day_file = f.replace("day", "rx1day")
+    stats_file = stats_dir+f.split("/")[-1].replace("day", "rx1day").replace("_precip", "").replace("_5x5", "").replace(".nc", "_"+str(start)+"-"+str(end)+"_stats.nc")
+    trend_file = trend_dir+f.split("/")[-1].replace("day", "rx1day").replace("_precip", "").replace("_5x5", "").replace(".nc", "_"+str(start)+"-"+str(end)+"_trend.nc")
 
+    if args.overwrite or not Path(rx1day_file).exists() or not Path(trend_file).exists() or not Path(stats_file).exists():
+        
+        if args.overwrite or not Path(rx1day_file).exists():
+            ds = xr.open_dataset(f)
+            print(f)
+            ## check for enough dates
+            if len(ds.sel(time = slice(str(start)+"-01", str(end)+"-12")).time) >= (end-start+1)*360:
+                ds_rx1day = ds.groupby(ds.time.dt.year).max(dim = "time")
+                ds_rx1day.to_netcdf(rx1day_file)
+            else: 
+                print("not enough dates")
+                continue
+        else: 
+            ds_rx1day = xr.open_dataset(rx1day_file)
+        
         ## subset dates 
         ds_rx1day = ds_rx1day.sel(year = slice(start, end))
-        
-        stats_file = stats_dir+f.split("/")[-1].replace("day", "rx1day").replace("_precip", "").replace("_5x5", "").replace(".nc", "_"+str(start)+"-"+str(end)+"_stats.nc")
-        trend_file = trend_dir+f.split("/")[-1].replace("day", "rx1day").replace("_precip", "").replace("_5x5", "").replace(".nc", "_"+str(start)+"-"+str(end)+"_trend.nc")
         
         if args.overwrite or not Path(stats_file).exists():
             stats = calc_rx1day_stats(ds_rx1day)
