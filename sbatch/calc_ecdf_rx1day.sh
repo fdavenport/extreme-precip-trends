@@ -1,14 +1,14 @@
 #!/bin/bash
 #SBATCH --job-name=calc_ecdf_rx1day
-#SBATCH --error=/davenport-scratch/fvdav22/job_output/calc_ecdf_rx1day.err
-#SBATCH --output=/davenport-scratch/fvdav22/job_output/calc_ecdf_rx1day.out
+#SBATCH --error=/davenport-scratch/fvdav22/job_output/calc_ecdf_rx1day_%a.err
+#SBATCH --output=/davenport-scratch/fvdav22/job_output/calc_ecdf_rx1day_%a.out
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=f.davenport@colostate.edu
 #SBATCH --ntasks=4
 #SBATCH --time=3:00:00
 #SBATCH --array=0-40%1
 #SBATCH -p dav_all
-#SBATCH --nodelist=davenport-cpu1
+#SBATCH --nodelist=davenport-cpu[1]
 
 
 cd /davenport-scratch/fvdav22/projects/extreme-precip-trends
