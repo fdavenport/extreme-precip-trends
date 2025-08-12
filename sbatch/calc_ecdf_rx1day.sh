@@ -7,7 +7,8 @@
 #SBATCH --ntasks=4
 #SBATCH --time=3:00:00
 #SBATCH --array=0-40%1
-#SBATCH --nodelist=davenport-cpu[1]
+#SBATCH --partition=dav_all
+#SBATCH --exclude=davenport-cpu[2]
 
 
 cd /davenport-scratch/fvdav22/projects/extreme-precip-trends
