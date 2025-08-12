@@ -23,6 +23,7 @@ print("end:", str(end))
 print("obs:", args.obs)
 print("model:", args.model)
 
+dir = "../processed_data/"
 
 if args.model == "cmip-sub":
     model = "cmip"
