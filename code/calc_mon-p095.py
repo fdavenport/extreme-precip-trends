@@ -38,12 +38,10 @@ for f in files:
     stats_file = stats_dir+f.split("/")[-1].replace("mon", "mon-p095").replace("precip_", "").replace("_5x5.nc", 
                                                                                   "_"+str(start)+"-"+str(end)+"_stats.nc")
 
-    if args.overwrite or not Path(trend_file).exists() or not Path(stats_file).exists():
-            
+    if args.overwrite or not Path(trend_file).exists() or not Path(stats_file).exists(): 
+        print("calculating",f)
         ds = xr.open_dataset(f)
-        print(f)
         ds = ds.sel(time = slice(str(start)+"-01-01", str(end)+"-12-31"))
-
 
         if args.overwrite or not Path(trend_file).exists():
             trends = _pyqreg_utils.quantiletrends_xr(ds, quant = q)
@@ -61,5 +59,7 @@ for f in files:
         
             stats.to_netcdf(stats_file)
 
+    else:
+        print("skipping", f)
 
 
