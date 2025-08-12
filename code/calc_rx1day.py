@@ -18,6 +18,7 @@ start = args.start
 end = args.end
 print("start:", str(start))
 print("end:", str(end))
+print("dataset:", args.dataset)
 
 file_dir = "../processed_data/"+args.dataset+"/"
 stats_dir = "../processed_data/"+args.dataset+"_stats/"
@@ -49,7 +50,6 @@ for f in files:
         
         if args.overwrite or not Path(rx1day_file).exists():
             ds = xr.open_dataset(f)
-            print(f)
             ## check for enough dates
             if len(ds.sel(time = slice(str(start)+"-01", str(end)+"-12")).time) >= (end-start+1)*360:
                 ds_rx1day = ds.groupby(ds.time.dt.year).max(dim = "time")
