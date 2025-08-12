@@ -1,6 +1,7 @@
 import xarray as xr
 import numpy as np
 import glob
+import json
 import argparse 
 import scipy
 from pathlib import Path
@@ -19,6 +20,8 @@ start = args.start
 end = args.end
 print("start:", str(start))
 print("end:", str(end))
+print("obs:", args.obs)
+print("model:", args.model)
 
 
 if args.model == "cmip-sub":
