@@ -44,4 +44,21 @@ def read_trends(dir, ds, freq, start, end, percent = True):
 
     return(trends)
         
+from statsmodels.distributions.empirical_distribution import ECDF
 
+def ecdf_func(ensemble, obs):
+    # np.nan is treated as Inf by ECDF, so need to manually remove these
+    if np.isnan(ensemble).all():
+        return(np.nan)
+    if np.isnan(obs):
+        return(np.nan)
+    ensemble = ensemble[~np.isnan(ensemble)]
+    
+    return (ECDF(ensemble)(obs))
+
+def ecdf_xr(ensemble, obs):       
+    return xr.apply_ufunc(ecdf_func, ensemble, obs, 
+                          input_core_dims = (["sim"], []), 
+                          dask = "allowed", 
+                          vectorize = True, ## required when function can only take 1D array
+                         )
