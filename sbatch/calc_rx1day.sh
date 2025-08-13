@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH --job-name=calc_rx1day
-#SBATCH --error=/davenport-scratch/fvdav22/job_output/calc_rx1day.err
-#SBATCH --output=/davenport-scratch/fvdav22/job_output/calc_rx1day.out
+#SBATCH --error=/davenport-scratch/fvdav22/job_output/calc_rx1day_%a.err
+#SBATCH --output=/davenport-scratch/fvdav22/job_output/calc_rx1day_%a.out
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=f.davenport@colostate.edu
 #SBATCH --ntasks=4
 #SBATCH --time=2:00:00
 #SBATCH --array=0-40
-#SBATCH -p dav_all
+#SBATCH -p all
 
 cd /davenport-scratch/fvdav22/projects/extreme-precip-trends
 eval "$(conda shell.bash hook)"
