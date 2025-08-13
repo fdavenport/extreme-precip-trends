@@ -50,8 +50,8 @@ for f in files:
         
         if args.overwrite or not Path(rx1day_file).exists():
             ds = xr.open_dataset(f)
-            ## check for enough dates
-            if len(ds.sel(time = slice(str(start)+"-01", str(end)+"-12")).time) >= (end-start+1)*360:
+            ## check for enough dates for 1950-2020 time period
+            if len(ds.sel(time = slice("1950-01", "2020-12")).time) >= (71)*360:
                 ds_rx1day = ds.groupby(ds.time.dt.year).max(dim = "time")
                 ds_rx1day.to_netcdf(rx1day_file)
             else: 
