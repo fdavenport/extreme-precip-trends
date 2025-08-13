@@ -4,12 +4,10 @@
 #SBATCH --output=/davenport-scratch/fvdav22/job_output/calc_rx1day.out
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=f.davenport@colostate.edu
-#SBATCH --ntasks=8
-#SBATCH --time=5:00:00
-#SBATCH --array=0-40%8
+#SBATCH --ntasks=4
+#SBATCH --time=2:00:00
+#SBATCH --array=0-40
 #SBATCH -p dav_all
-#SBATCH --nodelist=davenport-cpu1
-
 
 cd /davenport-scratch/fvdav22/projects/extreme-precip-trends
 eval "$(conda shell.bash hook)"
