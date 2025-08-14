@@ -4,8 +4,8 @@
 #SBATCH --output=/davenport-scratch/fvdav22/job_output/calc_mon-p095_%a.out
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=f.davenport@colostate.edu
-#SBATCH --ntasks=8
-#SBATCH --time=48:00:00
+#SBATCH --ntasks=4
+#SBATCH --time=24:00:00
 #SBATCH --array=0-60
 #SBATCH -p all
 
@@ -20,7 +20,7 @@ start_year=$((SLURM_ARRAY_TASK_ID+1930))
 for end_year in $(seq $((start_year + 30)) 2020); do
     
     python -u ./calc_mon-p095.py --start=$start_year --end=$end_year --dataset="gpcc" --q=0.95
-    python -u ./calc_mon-p095.py --start=$start_year --end=$end_year --dataset="cmip" --q=0.95
+    python -u ./calc_mon-p095.py --start=$start_year --end=$end_year --dataset="cmip-sub" --q=0.95
     python -u ./calc_mon-p095.py --start=$start_year --end=$end_year --dataset="mesaclip" --q=0.95
     python -u ./calc_mon-p095.py --start=$start_year --end=$end_year --dataset="spear" --q=0.95
 

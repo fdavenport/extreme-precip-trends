@@ -3,6 +3,7 @@ import numpy as np
 import glob
 import argparse 
 import scipy
+import json
 from pathlib import Path
 import _pyqreg_utils
 
@@ -29,6 +30,11 @@ trend_dir = "../processed_data/"+args.dataset+"_trends/"
 
 if args.dataset in ["mswep", "gpcc", "gpcc-shift", "gpcp"]:
     files = [file_dir+args.dataset+"_mon_precip_5x5.nc"]
+elif args.dataset == "cmip-sub":
+    model_var_dict = json.load(open(dir+"model_var_dict.json"))
+    files = []
+    for s in model_var_dict["cmip_mon_onevar"]:
+        files.append(glob.glob(file_dir+"cmip*mon*"+s+"*.nc"))
 else:
     files = sorted(glob.glob(file_dir+args.dataset+"_mon*.nc"))
     
@@ -41,7 +47,7 @@ for f in files:
     if args.overwrite or not Path(trend_file).exists() or not Path(stats_file).exists(): 
         print("calculating",f)
         ds = xr.open_dataset(f)
-        ds = ds.sel(time = slice(str(start)+"-01-01", str(end)+"-12-31"))
+        ds = ds.sel(time = slice(str(start)+"-01", str(end)+"-12"))
 
         if args.overwrite or not Path(trend_file).exists():
             trends = _pyqreg_utils.quantiletrends_xr(ds, quant = q)
