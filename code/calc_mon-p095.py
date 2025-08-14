@@ -24,7 +24,7 @@ q = args.q
 print("start:", str(start))
 print("end:", str(end))
 
-if args.data == "cmip-sub":
+if args.dataset == "cmip-sub":
     dataset = "cmip"
 else:
     dataset = args.dataset 
