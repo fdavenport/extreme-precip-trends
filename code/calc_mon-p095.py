@@ -31,7 +31,7 @@ trend_dir = "../processed_data/"+args.dataset+"_trends/"
 if args.dataset in ["mswep", "gpcc", "gpcc-shift", "gpcp"]:
     files = [file_dir+args.dataset+"_mon_precip_5x5.nc"]
 elif args.dataset == "cmip-sub":
-    model_var_dict = json.load(open(dir+"model_var_dict.json"))
+    model_var_dict = json.load(open("../processed_data/model_var_dict.json"))
     files = []
     for s in model_var_dict["cmip_mon_onevar"]:
         files.append(glob.glob(file_dir+"cmip*mon*"+s+"*.nc"))
