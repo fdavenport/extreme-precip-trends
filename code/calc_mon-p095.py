@@ -24,9 +24,14 @@ q = args.q
 print("start:", str(start))
 print("end:", str(end))
 
-file_dir = "../processed_data/"+args.dataset+"/"
-stats_dir = "../processed_data/"+args.dataset+"_stats/"
-trend_dir = "../processed_data/"+args.dataset+"_trends/"
+if args.data == "cmip-sub":
+    dataset = "cmip"
+else:
+    dataset = args.dataset 
+    
+file_dir = "../processed_data/"+dataset+"/"
+stats_dir = "../processed_data/"+dataset+"_stats/"
+trend_dir = "../processed_data/"+dataset+"_trends/"
 
 if args.dataset in ["mswep", "gpcc", "gpcc-shift", "gpcp"]:
     files = [file_dir+args.dataset+"_mon_precip_5x5.nc"]
