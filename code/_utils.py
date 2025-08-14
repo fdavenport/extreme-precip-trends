@@ -2,8 +2,39 @@ import numpy as np
 import xarray as xr
 import pandas as pd
 import glob
+import json
 
 def read_trends(dir, ds, freq, start, end, percent = True):
+    if ds == "cmip-sub": 
+        model_var_dict = json.load(open(dir+"model_var_dict.json"))
+        if freq == "rx1day":
+            sims = model_var_dict["cmip_day_onevar"]
+        elif freq == "mon-p095":
+            sims = model_var_dict["cmip_mon_onevar"]
+
+        trends = []
+        for s in sims: 
+            f = dir+"cmip_trends/cmip_"+freq+"_"+s+"_"+str(start)+"-"+str(end)+"_trend.nc"
+            x = xr.open_dataset(f).assign_coords({"sim": s})
+            try:
+                x = x.drop_vars("type")
+            except:
+                pass
+            trends.append(x)
+        trends = xr.concat(trends, dim = "sim")  
+        
+        if percent: 
+            stats = []
+            for s in sims: 
+                f = dir+"cmip_stats/cmip_"+freq+"_"+s+"_"+str(start)+"-"+str(end)+"_stats.nc"
+                x = xr.open_dataset(f).assign_coords({"sim": s})
+                try:
+                    x = x.drop_vars("type")
+                except:
+                    pass
+                stats.append(x)
+            stats = xr.concat(stats, dim = "sim")
+            
     if ds in ["cmip", "spear", "mesaclip"]:
 
         files = sorted(glob.glob(dir+ds+"_trends/"+ds+"_"+freq+"_*_"+str(start)+"-"+str(end)+"_trend.nc"))
