@@ -34,7 +34,7 @@ elif args.dataset == "cmip-sub":
     model_var_dict = json.load(open("../processed_data/model_var_dict.json"))
     files = []
     for s in model_var_dict["cmip_mon_onevar"]:
-        files.append(glob.glob(file_dir+"cmip*mon*"+s+"*.nc"))
+        files.append(glob.glob(file_dir+"cmip*mon*"+s+"*.nc")[0])
 else:
     files = sorted(glob.glob(file_dir+args.dataset+"_mon*.nc"))
     
