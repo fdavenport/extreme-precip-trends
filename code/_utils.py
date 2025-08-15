@@ -93,3 +93,15 @@ def ecdf_xr(ensemble, obs):
                           dask = "allowed", 
                           vectorize = True, ## required when function can only take 1D array
                          )
+
+def test_ecdf(model_trends, obs_trend):
+    ecdf_dat = []
+    for simname in model_trends.sim.values:
+        a = xr.concat([model_trends.drop_sel(sim = simname), obs_trend.expand_dims({"sim": ["obs"]})], dim = "sim")
+        b = model_trends.sel(sim = simname)
+        x = ecdf_xr(a, b)
+        ecdf_dat.append([((b > 0) & (x == 0)).sum().values, ((b > 0) & (x == 1)).sum().values, (b > 0).sum().values, 
+                         ((b < 0) & (x == 0)).sum().values, ((b < 0) & (x == 1)).sum().values, b.count().values])
+    
+    ecdf_dat = pd.DataFrame(ecdf_dat, columns = ["pos_ecdf_0", "pos_ecdf_1", "pos_trends", "neg_ecdf_0", "neg_ecdf_1", "num_values"])
+    return(ecdf_dat)
