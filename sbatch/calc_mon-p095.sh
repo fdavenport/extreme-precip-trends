@@ -25,8 +25,8 @@ for end_year in $(seq $((start_year + 30)) 2020); do
     python -u ./calc_mon-p095.py --start=$start_year --end=$end_year --dataset="spear" --q=0.95
 
     if [ "$start_year" -ge 1979 ]; then
-       python -u ./calc_mon-p095.py --start=$start_year --end=$end_year --dataset="gpcp"
-       python -u ./calc_mon-p095.py --start=$start_year --end=$end_year --dataset="mswep"
+       python -u ./calc_mon-p095.py --start=$start_year --end=$end_year --dataset="gpcp" --q=0.95
+       python -u ./calc_mon-p095.py --start=$start_year --end=$end_year --dataset="mswep" --q=0.95
     fi
         
 done
