@@ -1,0 +1,39 @@
+#!/bin/bash
+#SBATCH --job-name=calc_ecdf_mon-p095
+#SBATCH --error=/davenport-scratch/fvdav22/job_output/calc_ecdf_mon-p095_%a.err
+#SBATCH --output=/davenport-scratch/fvdav22/job_output/calc_ecdf_mon-p095_%a.out
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=f.davenport@colostate.edu
+#SBATCH --ntasks=4
+#SBATCH --time=3:00:00
+#SBATCH --array=0-60
+#SBATCH --partition=all
+
+
+cd /davenport-scratch/fvdav22/projects/extreme-precip-trends
+eval "$(conda shell.bash hook)"
+conda activate ./envs
+cd code
+
+start_year=$((SLURM_ARRAY_TASK_ID+1930))
+
+for end_year in $(seq $((start_year + 30)) 2020); do
+    
+    python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="gpcc" --model="cmip-sub" --var="mon-p095"
+    python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="gpcc" --model="spear" --var="mon-p095"
+    python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="gpcc" --model="mesaclip" --var="mon-p095"
+    
+    if [ "$start_year" -ge 1979 ]; then
+       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="gpcp" --model="cmip-sub" --var="mon-p095"
+       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="gpcp" --model="spear" --var="mon-p095"
+       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="gpcp" --model="mesaclip" --var="mon-p095"
+       
+       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="mswep" --model="cmip-sub" --var="mon-p095"
+       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="mswep" --model="spear" --var="mon-p095"
+       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="mswep" --model="mesaclip" --var="mon-p095"
+    fi
+
+done
+
+
+
