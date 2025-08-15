@@ -45,7 +45,7 @@ if not args.test:
     ecdf_result = _utils.ecdf_xr(model_trend, obs_trend)
     ecdf_result.to_netcdf("../processed_data/ecdf/"+args.obs+"_"+args.model+"_"+args.var+"_"+str(start)+"-"+str(end)+"_ecdf.nc")
 else: 
-    ecdf_test = test_ecdf(mask(model_trend), mask(obs_trend))
+    ecdf_test = _utils.test_ecdf(mask(model_trend), mask(obs_trend))
     ecdf_test.to_csv("../processed_data/ecdf/"+args.obs+"_"+args.model+"_"+args.var+"_"+str(start)+"-"+str(end)+"_ecdf_test.csv")
     
     
