@@ -9,8 +9,12 @@ file_dir = "../processed_data/"
 
 model_var_dict = json.load(open(file_dir+"model_var_dict.json"))
 
-mon_pos_trends = [] 
+common_mask = xr.open_dataset("../processed_data/common_land_mask.nc")
+def mask(ds):
+    return(xr.where(common_mask.__xarray_dataarray_variable__ == 1, ds, np.nan))
 
+
+mon_pos_trends = [] 
 for start in np.arange(1930, 1991, 1):
     print(start)
     for end in np.arange(start+30, 2021,1): 
