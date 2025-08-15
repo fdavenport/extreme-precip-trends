@@ -65,4 +65,95 @@ for start in np.arange(1950, 1991, 1):
                 day_pos_trends.append(dat)
 day_pos_trends = pd.concat(day_pos_trends)
 day_pos_trends.to_csv(file_dir+"model_positive_rx1day_trends.csv")
+
+
+mon_obs_pos_trends = []
+for start in np.arange(1930, 1991, 1):
+    for obs in ["gpcc", "gpcp", "mswep"]: 
+        if (obs in ["gpcp", "mswep"]) & (start < 1979):
+            continue  
+        for end in np.arange(start+30, 2021,1): 
+            obs_trend = mask(_utils.read_trends(file_dir, obs, "mon-p095", start, end))
+            dat = pd.DataFrame({"start_year": [start], 
+                                "end_year": [end],
+                                "obs":[obs],
+                                "pos_trends": (obs_trend > 0).sum().values})
+            mon_obs_pos_trends.append(dat)
+        
+mon_obs_pos_trends = pd.concat(mon_obs_pos_trends)
+mon_obs_pos_trends.to_csv(file_dir+"obs_positive_monthly_trends.csv")
+
+day_obs_pos_trends = []
+for start in np.arange(1950, 1991, 1):
+    for obs in ["regen", "cpc", "mswep"]: 
+        if (obs in ["cpc", "mswep"]) & (start < 1979):
+            continue  
+        if (obs == "regen") & (start > 1986): 
+            continue
+        if obs == "regen":
+            max_end = 2016
+        else:
+            max_end = 2020
+        for end in np.arange(start+30, max_end,1): 
+            obs_trend = mask(_utils.read_trends(file_dir, obs, "mon-p095", start, end))
+            dat = pd.DataFrame({"start_year": [start], 
+                                "end_year": [end],
+                                "obs":[obs],
+                                "pos_trends": (obs_trend > 0).sum().values})
+            day_obs_pos_trends.append(dat)
+        
+day_obs_pos_trends = pd.concat(day_obs_pos_trends)
+day_obs_pos_trends.to_csv(file_dir+"obs_positive_rx1day_trends.csv")
+
+mon_summary = []
+for start in np.arange(1930, 1991, 1):
+    print(start)
+    for obs in ["gpcc", "gpcp", "mswep"]: 
+        if (obs in ["gpcp", "mswep"]) & (start < 1979):
+            continue
+        for end in np.arange(start+30, 2021,1): 
+            for model in ["cmip-sub", "spear", "mesaclip"]: 
+                obs_trend = mask(_utils.read_trends(file_dir, obs, "mon-p095", start, end))
+                ecdf_dat = mask(xr.open_dataarray(file_dir+"ecdf/"+obs+"_"+model+"_mon-p095_"+str(start)+"-"+str(end)+"_ecdf.nc"))
                 
+                dat = pd.DataFrame({"start_year": [start], 
+                                    "end_year": [end],
+                                    "obs":[obs],
+                                    "model": [model],
+                                    "ecdf_pos_1": ((obs_trend > 0) & (ecdf_dat == 1)).sum().values,
+                                    "ecdf_pos_0": ((obs_trend > 0) & (ecdf_dat == 0)).sum().values,
+                                    "ecdf_neg_1": ((obs_trend < 0) & (ecdf_dat == 1)).sum().values,
+                                    "ecdf_neg_0": ((obs_trend < 0) & (ecdf_dat == 0)).sum().values})
+                mon_summary.append(dat)
+mon_summary = pd.concat(mon_summary)
+mon_summary.to_csv(file_dir+"time_series_summary_mon-p095.csv")
+
+day_summary = []
+for start in np.arange(1950, 1991, 1):
+    print(start)
+    for obs in ["regen", "cpc", "mswep"]: 
+        if (obs in ["cpc", "mswep"]) & (start < 1979):
+            continue
+        if (obs == "regen") & (start > 1986): 
+            continue
+        if obs == "regen":
+            max_end = 2016
+        else:
+            max_end = 2020
+        for end in np.arange(start+30, max_end+1,1): 
+            for model in ["cmip-sub", "spear", "mesaclip"]: 
+                obs_trend = mask(_utils.read_trends(file_dir, obs, "rx1day", start, end))
+                ecdf_dat = mask(xr.open_dataarray(file_dir+"ecdf/"+obs+"_"+model+"_rx1day_"+str(start)+"-"+str(end)+"_ecdf.nc"))
+                
+                dat = pd.DataFrame({"start_year": [start], 
+                                    "end_year": [end],
+                                    "obs":[obs],
+                                    "model": [model],
+                                    "ecdf_pos_1": ((obs_trend > 0) & (ecdf_dat == 1)).sum().values,
+                                    "ecdf_pos_0": ((obs_trend > 0) & (ecdf_dat == 0)).sum().values,
+                                    "ecdf_neg_1": ((obs_trend < 0) & (ecdf_dat == 1)).sum().values,
+                                    "ecdf_neg_0": ((obs_trend < 0) & (ecdf_dat == 0)).sum().values})
+                day_summary.append(dat)
+        
+day_summary = pd.concat(day_summary)
+day_summary.to_csv(file_dir+"time_series_summary_rx1day.csv")
