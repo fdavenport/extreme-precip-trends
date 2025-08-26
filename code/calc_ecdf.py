@@ -9,7 +9,7 @@ import _utils
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--overwrite', action='store_true') #don't overwrite unless overwrite specified
-parser.add_argument('--obs_mask', action='store_true') #use obs mask if specified
+parser.add_argument('--obsmask', action='store_true') #use obs mask if specified
 parser.add_argument('--test', action='store_true') #specify whether to do test or regular calculation
 parser.add_argument('--start', type=int)
 parser.add_argument('--end', type=int)
@@ -50,7 +50,7 @@ if not args.test:
     ecdf_result = _utils.ecdf_xr(model_trend, obs_trend)
     ecdf_result.to_netcdf("../processed_data/ecdf/"+args.obs+"_"+args.model+"_"+args.var+"_"+str(start)+"-"+str(end)+"_ecdf.nc")
 else: 
-    if args.obs_mask: 
+    if args.obsmask: 
         ecdf_test = _utils.test_ecdf(gauge_mask(model_trend), gauge_mask(obs_trend))
         ecdf_test.to_csv("../processed_data/ecdf/"+args.obs+"_"+args.model+"_"+args.var+"_"+str(start)+"-"+str(end)+"_ecdf_test_gauge_mask.csv")
     else: 
