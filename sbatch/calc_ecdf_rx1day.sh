@@ -6,8 +6,8 @@
 #SBATCH --mail-user=f.davenport@colostate.edu
 #SBATCH --ntasks=4
 #SBATCH --time=3:00:00
-#SBATCH --array=0-40%1
-#SBATCH --partition=dav_all
+#SBATCH --array=0-40%16
+#SBATCH --partition=all
 
 
 cd /davenport-scratch/fvdav22/projects/extreme-precip-trends

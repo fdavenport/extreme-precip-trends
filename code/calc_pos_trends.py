@@ -11,16 +11,18 @@ model_var_dict = json.load(open(file_dir+"model_var_dict.json"))
 
 common_mask = xr.open_dataset("../processed_data/common_land_mask.nc")
 def mask(ds):
+    if len(ds.lat) < len(common_mask.lat):
+        ds = xr.broadcast(ds, common_mask)[0]
     return(xr.where(common_mask.__xarray_dataarray_variable__ == 1, ds, np.nan))
 
-
+print("calculating model positive trends - mon-p095")
 mon_pos_trends = [] 
 for start in np.arange(1930, 1991, 1):
     print(start)
     for end in np.arange(start+30, 2021,1): 
         for sim in model_var_dict["cmip_mon_onevar"]:
             f = file_dir+"cmip_trends/cmip_mon-p095_"+sim+"_"+str(start)+"-"+str(end)+"_trend.nc"
-            ds = xr.open_dataarray(f)
+            ds = mask(xr.open_dataarray(f))
             dat = pd.DataFrame({"start_year": [start], 
                                 "end_year": [end],
                                 "model": ["cmip"],
@@ -32,7 +34,7 @@ for start in np.arange(1930, 1991, 1):
             files = sorted(glob.glob(file_dir+model+"_trends/"+model+"_mon-p095_*_"+str(start)+"-"+str(end)+"_trend.nc"))
             for f in files:
                 sim = f.split("/")[-1].replace(model+"_mon-p095_", "").replace("_"+str(start)+"-"+str(end)+"_trend.nc", "")
-                ds = xr.open_dataarray(f)
+                ds = mask(xr.open_dataarray(f))
                 dat = pd.DataFrame({"start_year": [start], 
                                     "end_year": [end],
                                     "model": [model],
@@ -42,13 +44,14 @@ for start in np.arange(1930, 1991, 1):
 mon_pos_trends = pd.concat(mon_pos_trends)
 mon_pos_trends.to_csv(file_dir+"model_positive_mon-p095_trends.csv")
 
+print("calculating model positive trends - Rx1day")
 day_pos_trends = [] 
 for start in np.arange(1950, 1991, 1):
     print(start)
     for end in np.arange(start+30, 2021,1): 
         for sim in model_var_dict["cmip_day_onevar"]:
             f = file_dir+"cmip_trends/cmip_rx1day_"+sim+"_"+str(start)+"-"+str(end)+"_trend.nc"
-            ds = xr.open_dataarray(f)
+            ds = mask(xr.open_dataarray(f))
             dat = pd.DataFrame({"start_year": [start], 
                                 "end_year": [end],
                                 "model": ["cmip"],
@@ -60,7 +63,7 @@ for start in np.arange(1950, 1991, 1):
             files = sorted(glob.glob(file_dir+model+"_trends/"+model+"_rx1day_*_"+str(start)+"-"+str(end)+"_trend.nc"))
             for f in files:
                 sim = f.split("/")[-1].replace(model+"_rx1day_", "").replace("_"+str(start)+"-"+str(end)+"_trend.nc", "")
-                ds = xr.open_dataarray(f)
+                ds = mask(xr.open_dataarray(f))
                 dat = pd.DataFrame({"start_year": [start], 
                                     "end_year": [end],
                                     "model": [model],
@@ -70,12 +73,13 @@ for start in np.arange(1950, 1991, 1):
 day_pos_trends = pd.concat(day_pos_trends)
 day_pos_trends.to_csv(file_dir+"model_positive_rx1day_trends.csv")
 
-
+print("calculating obs positive trends - mon-p095")
 mon_obs_pos_trends = []
 for start in np.arange(1930, 1991, 1):
     for obs in ["gpcc", "gpcp", "mswep"]: 
         if (obs in ["gpcp", "mswep"]) & (start < 1979):
             continue  
+        print(obs, start)
         for end in np.arange(start+30, 2021,1): 
             obs_trend = mask(_utils.read_trends(file_dir, obs, "mon-p095", start, end))
             dat = pd.DataFrame({"start_year": [start], 
@@ -87,6 +91,7 @@ for start in np.arange(1930, 1991, 1):
 mon_obs_pos_trends = pd.concat(mon_obs_pos_trends)
 mon_obs_pos_trends.to_csv(file_dir+"obs_positive_monthly_trends.csv")
 
+print("calculating obs positive trends - Rx1day")
 day_obs_pos_trends = []
 for start in np.arange(1950, 1991, 1):
     for obs in ["regen", "cpc", "mswep"]: 
@@ -98,8 +103,9 @@ for start in np.arange(1950, 1991, 1):
             max_end = 2016
         else:
             max_end = 2020
+        print(obs, start)
         for end in np.arange(start+30, max_end,1): 
-            obs_trend = mask(_utils.read_trends(file_dir, obs, "mon-p095", start, end))
+            obs_trend = mask(_utils.read_trends(file_dir, obs, "rx1day", start, end))
             dat = pd.DataFrame({"start_year": [start], 
                                 "end_year": [end],
                                 "obs":[obs],
@@ -109,6 +115,7 @@ for start in np.arange(1950, 1991, 1):
 day_obs_pos_trends = pd.concat(day_obs_pos_trends)
 day_obs_pos_trends.to_csv(file_dir+"obs_positive_rx1day_trends.csv")
 
+print("summarizing ecdf results over time - mon-p095")
 mon_summary = []
 for start in np.arange(1930, 1991, 1):
     print(start)
@@ -132,6 +139,7 @@ for start in np.arange(1930, 1991, 1):
 mon_summary = pd.concat(mon_summary)
 mon_summary.to_csv(file_dir+"time_series_summary_mon-p095.csv")
 
+print("summarizing ecdf results over time - Rx1day")
 day_summary = []
 for start in np.arange(1950, 1991, 1):
     print(start)

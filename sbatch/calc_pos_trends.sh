@@ -4,8 +4,8 @@
 #SBATCH --output=/davenport-scratch/fvdav22/job_output/calc_pos_trends.out
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=f.davenport@colostate.edu
-#SBATCH --ntasks=4
-#SBATCH --time=4:00:00
+#SBATCH -c 64
+#SBATCH --time=10:00:00
 #SBATCH -p dav_all
 
 cd /davenport-scratch/fvdav22/projects/extreme-precip-trends
