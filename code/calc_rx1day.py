@@ -50,13 +50,13 @@ for f in files:
         
         if args.overwrite or not Path(rx1day_file).exists():
             ds = xr.open_dataset(f)
-            ## check for enough dates for 1950-2020 time period
-            if len(ds.sel(time = slice("1950-01", "2020-12")).time) >= (71)*360:
-                ds_rx1day = ds.groupby(ds.time.dt.year).max(dim = "time")
-                ds_rx1day.to_netcdf(rx1day_file)
-            else: 
+            ## check for enough dates for 1950-2020 time period for cmip simulations
+            if (args.dataset == "cmip") & (len(ds.sel(time = slice("1950-01", "2020-12")).time) < (71)*360):
                 print("not enough dates")
                 continue
+            
+            ds_rx1day = ds.groupby(ds.time.dt.year).max(dim = "time")
+            ds_rx1day.to_netcdf(rx1day_file)
         else: 
             ds_rx1day = xr.open_dataset(rx1day_file)
         
