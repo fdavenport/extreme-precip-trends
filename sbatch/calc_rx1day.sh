@@ -6,8 +6,8 @@
 #SBATCH --mail-user=f.davenport@colostate.edu
 #SBATCH --ntasks=4
 #SBATCH --time=2:00:00
-#SBATCH --array=0-40
-#SBATCH -p all
+#SBATCH --array=23-40
+#SBATCH -p dav_all,coe_all
 
 cd /davenport-scratch/fvdav22/projects/extreme-precip-trends
 eval "$(conda shell.bash hook)"
@@ -19,18 +19,18 @@ start_year=$((SLURM_ARRAY_TASK_ID+1950))
 for end_year in $(seq $((start_year + 30)) 2020); do
     
     # calculate trends through 2016 for all models and REGEN
-    python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="cmip"
-    python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="mesaclip"
-    python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="spear"
+    #python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="cmip"
+    #python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="mesaclip"
+    #python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="spear"
     
     if [ "$end_year" -le 2016 ]; then
-       python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="regen"
+       python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="regen" --overwrite
     fi
     
-    if [ "$start_year" -ge 1979 ]; then
-       python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="cpc"
-       python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="mswep"
-    fi
+    #if [ "$start_year" -ge 1979 ]; then
+      # python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="cpc"
+      # python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="mswep"
+    #fi
 
 done
 

@@ -18,9 +18,12 @@ start_year=$((SLURM_ARRAY_TASK_ID+1950))
 
 for end_year in $(seq $((start_year + 30)) 2016); do
     
-    python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="regen" --model="cmip-sub" --var="rx1day" --test
-    python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="regen" --model="spear" --var="rx1day" --test
-    python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="regen" --model="mesaclip" --var="rx1day" --test
+    python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="regen" --model="cmip-sub" --var="rx1day" --test --overwrite
+    python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="regen" --model="cmip-sub" --var="rx1day" --test --overwrite --obsmask
+    python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="regen" --model="spear" --var="rx1day" --test --overwrite
+    python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="regen" --model="spear" --var="rx1day" --test --overwrite --obsmask
+    python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="regen" --model="mesaclip" --var="rx1day" --test --overwrite
+    python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="regen" --model="mesaclip" --var="rx1day" --test --overwrite --obsmask
     
 
 done

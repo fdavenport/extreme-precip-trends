@@ -20,20 +20,20 @@ start_year=$((SLURM_ARRAY_TASK_ID+1950))
 for end_year in $(seq $((start_year + 30)) 2020); do
     
     if [ "$end_year" -le 2016 ]; then
-       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="regen" --model="cmip-sub" --var="rx1day"
-       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="regen" --model="spear" --var="rx1day"
-       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="regen" --model="mesaclip" --var="rx1day"
+       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="regen" --model="cmip-sub" --var="rx1day" --overwrite
+       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="regen" --model="spear" --var="rx1day" --overwrite
+       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="regen" --model="mesaclip" --var="rx1day" --overwrite
     fi
     
-    if [ "$start_year" -ge 1979 ]; then
-       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="cpc" --model="cmip-sub" --var="rx1day"
-       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="cpc" --model="spear" --var="rx1day"
-       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="cpc" --model="mesaclip" --var="rx1day"
+#    if [ "$start_year" -ge 1979 ]; then
+#       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="cpc" --model="cmip-sub" --var="rx1day"
+#       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="cpc" --model="spear" --var="rx1day"
+#       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="cpc" --model="mesaclip" --var="rx1day"
        
-       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="mswep" --model="cmip-sub" --var="rx1day"
-       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="mswep" --model="spear" --var="rx1day"
-       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="mswep" --model="mesaclip" --var="rx1day"
-    fi
+#       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="mswep" --model="cmip-sub" --var="rx1day"
+#       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="mswep" --model="spear" --var="rx1day"
+#       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="mswep" --model="mesaclip" --var="rx1day"
+#    fi
 
 done
 
