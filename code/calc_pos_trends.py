@@ -103,7 +103,7 @@ for start in np.arange(1930, 1991, 1):
             dat = pd.DataFrame({"start_year": [start], 
                                 "end_year": [end],
                                 "obs":[obs],
-                                "pos_trends": (obs_trend > 0).sum().values
+                                "pos_trends": (obs_trend > 0).sum().values,
                                 "pos_trends_gaugemask": (gauge_mask(obs_trend) > 0).sum().values})
             mon_obs_pos_trends.append(dat)
         
