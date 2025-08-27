@@ -6,8 +6,8 @@
 #SBATCH --mail-user=f.davenport@colostate.edu
 #SBATCH --ntasks=4
 #SBATCH --time=2:00:00
-#SBATCH --array=23-40
-#SBATCH -p dav_all,coe_all
+#SBATCH --array=0-40
+#SBATCH -p all
 
 cd /davenport-scratch/fvdav22/projects/extreme-precip-trends
 eval "$(conda shell.bash hook)"
@@ -24,7 +24,7 @@ for end_year in $(seq $((start_year + 30)) 2020); do
     #python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="spear"
     
     if [ "$end_year" -le 2016 ]; then
-       python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="regen" --overwrite
+       python -u ./calc_rx1day.py --start=$start_year --end=$end_year --dataset="regen" 
     fi
     
     #if [ "$start_year" -ge 1979 ]; then
