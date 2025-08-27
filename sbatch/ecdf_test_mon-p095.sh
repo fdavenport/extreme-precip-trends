@@ -20,8 +20,11 @@ start_year=$((SLURM_ARRAY_TASK_ID+1930))
 for end_year in $(seq $((start_year + 30)) 2020); do
     
     python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="gpcc" --model="cmip-sub" --var="mon-p095" --test
-    python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="gpcc" --model="spear" --var="mon-p095" --test
+    python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="gpcc" --model="cmip-sub" --var="mon-p095" --test --obsmask
+    python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="gpcc" --model="spear" --var="mon-p095" --test 
+    python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="gpcc" --model="spear" --var="mon-p095" --test --obsmask
     python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="gpcc" --model="mesaclip" --var="mon-p095" --test
+    python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="gpcc" --model="mesaclip" --var="mon-p095" --test --obsmask
     
 done
 
