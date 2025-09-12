@@ -123,7 +123,7 @@ for start in np.arange(1950, 1991, 1):
         else:
             max_end = 2020
         print(obs, start)
-        for end in np.arange(start+30, max_end,1): 
+        for end in np.arange(start+30, max_end+1,1): 
             obs_trend = mask(_utils.read_trends(file_dir, obs, "rx1day", start, end))
             dat = pd.DataFrame({"start_year": [start], 
                                 "end_year": [end],
