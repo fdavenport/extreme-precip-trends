@@ -1,22 +1,28 @@
 ## Description of files: 
 
 ### utils: 
-* **_trend_utils.py**: functions for calculating trends
+* **_utils.py**: functions used throughout scripts
+* **_pyqreg_utils.py**: functions for calculating quantile regression
 
-  
-### data pre-processing: 
+### regridding: 
 * **regrid_obs_data.ipynb**: regrid GPCC, GPCP, and CPC data
-* **regrid_MSWEP.py**: regrid MSWEP data
+* **regrid_mswep.py**: regrid MSWEP data
+* **combine_mswep.py**: combine regridded MSWEP data into one file
+* **create_land_masks.ipynb**: create land masks for models missing land fraction file
 * **regrid_cmip.py**: regrid historical and ssp585 simulations
-* **regrid_highres_cmip.py**: regrid hist-1950 and highres-future simulations
 * **regrid_mesaclip.py**: regrid the MESACLIP simulations
-  
-## trend calculations: 
+* **resample_mesaclip_monthly.py**: calculate monthly precip from daily MESACLIP output
 
+### other pre-processing: 
+* **check_cmip_simulations.ipynb**: check dates for cmip simulations
+* **obs_quality_masks.ipynb**: create mask based on long-term gauge availability
+  
+### trend calculations: 
+* **calc_mon-p095.py**: calculate monthly 95th percentile quantile regression trends
+* **calc_rx1day.py**: calculate Rx1day trends
+* **calc_ecdf.py**: calculate empirical CDF trend quantiles within model distribution
+* **summarize_results.py**: summarize trend and empirical CDF comparison results into .csv files
 
 ### figures: 
-* **Fig_accuracy_maps.ipynb**: create Figure 2, Figure 3, Figures S2-S9 and Figures S12-S13
-* **Fig_GCM_ERSSTv5_accuracy_comparison.ipynb**: create Figure 4
-* **Fig_hyperparameter_tuning.ipynb**: create Figure S1
-* **Fig_persistance_accuracy.ipynb**: create Figures S10, S11 and S14
-* **Fig_concurrent_windows_of_opportunity.ipynb**: create Figure S15
+* **figures.ipynb**: create figures
+
