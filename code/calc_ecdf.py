@@ -35,7 +35,7 @@ common_mask = xr.open_dataset("../processed_data/common_land_mask.nc")
 def model_mask(ds):
     return(xr.where(common_mask.__xarray_dataarray_variable__ == 1, ds, np.nan))
 
-combined_mask_dat = xr.open_dataset(file_dir+"combined_gauge_model_mask.nc")
+combined_mask_dat = xr.open_dataset("../processed_data/combined_gauge_model_mask.nc")
 def combined_mask(ds):
     return(xr.where(combined_mask_dat.__xarray_dataarray_variable__ >= 2, ds, np.nan))
 
@@ -57,6 +57,7 @@ else:
                          "_"+args.var+"_"+str(start)+"-"+str(end)+"_ecdf_test_gauge_mask.csv")
     else: 
         ecdf_test = _utils.test_ecdf(model_mask(model_trend), model_mask(obs_trend))
-        ecdf_test.to_csv("../processed_data/ecdf/"+args.obs+"_"+args.model+"_"+args.var+"_"+str(start)+"-"+str(end)+"_ecdf_test.csv")
+        ecdf_test.to_csv("../processed_data/ecdf/"+\
+                         args.obs+"_"+args.model+"_"+args.var+"_"+str(start)+"-"+str(end)+"_ecdf_test.csv")
     
     
