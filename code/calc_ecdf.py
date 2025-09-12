@@ -32,12 +32,12 @@ else:
     model = args.model
 
 common_mask = xr.open_dataset("../processed_data/common_land_mask.nc")
-def mask(ds):
+def model_mask(ds):
     return(xr.where(common_mask.__xarray_dataarray_variable__ == 1, ds, np.nan))
 
-regen_mask = xr.open_dataset("../processed_data/regen_LongTerm_quality_mask.nc")
-def gauge_mask(ds):
-    return(xr.where(regen_mask.p >= 2, ds, np.nan))
+combined_mask_dat = xr.open_dataset(file_dir+"combined_gauge_model_mask.nc")
+def combined_mask(ds):
+    return(xr.where(combined_mask_dat.__xarray_dataarray_variable__ >= 2, ds, np.nan))
 
 obs_trend = _utils.read_trends("../processed_data/", args.obs, args.var, start, end)
 model_trend = _utils.read_trends("../processed_data/", model, args.var, start, end)
@@ -48,13 +48,15 @@ elif (args.model == "cmip-sub") & (args.var == "mon-p095"):
     
 if not args.test: 
     ecdf_result = _utils.ecdf_xr(model_trend, obs_trend)
-    ecdf_result.to_netcdf("../processed_data/ecdf/"+args.obs+"_"+args.model+"_"+args.var+"_"+str(start)+"-"+str(end)+"_ecdf.nc")
+    ecdf_result.to_netcdf("../processed_data/ecdf/"+args.obs+\
+                          "_"+args.model+"_"+args.var+"_"+str(start)+"-"+str(end)+"_ecdf.nc")
 else: 
     if args.obsmask: 
-        ecdf_test = _utils.test_ecdf(gauge_mask(model_trend), gauge_mask(obs_trend))
-        ecdf_test.to_csv("../processed_data/ecdf/"+args.obs+"_"+args.model+"_"+args.var+"_"+str(start)+"-"+str(end)+"_ecdf_test_gauge_mask.csv")
+        ecdf_test = _utils.test_ecdf(combined_mask(model_trend), combined_mask(obs_trend))
+        ecdf_test.to_csv("../processed_data/ecdf/"+args.obs+"_"+args.model+\
+                         "_"+args.var+"_"+str(start)+"-"+str(end)+"_ecdf_test_gauge_mask.csv")
     else: 
-        ecdf_test = _utils.test_ecdf(mask(model_trend), mask(obs_trend))
+        ecdf_test = _utils.test_ecdf(model_mask(model_trend), model_mask(obs_trend))
         ecdf_test.to_csv("../processed_data/ecdf/"+args.obs+"_"+args.model+"_"+args.var+"_"+str(start)+"-"+str(end)+"_ecdf_test.csv")
     
     
