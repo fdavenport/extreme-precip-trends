@@ -4,6 +4,7 @@ channels:
 dependencies:
  - python=3.9
  - nodejs
+ - libgfortran5>=14
  - numpy
  - pandas
  - dask>=2022.12
