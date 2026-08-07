@@ -74,7 +74,27 @@ def read_trends(dir, ds, freq, start, end, percent = True):
             trends = (trends.sel(predictions = "coeff").value*10)/stats.mu*100
 
     return(trends)
-        
+
+def area_weights(mask):
+    """Cell-area (cos-latitude) weights on `mask`'s lat/lon grid, zeroed outside `mask`.
+
+    Assumes a regular lat/lon grid, where cell area is proportional to cos(latitude).
+    """
+    w = np.cos(np.deg2rad(mask.lat))
+    w = xr.broadcast(w, mask)[0]
+    return w.where(mask, 0.0)
+
+def weighted_fraction(cond, weights, total_weight):
+    """Area-weighted fraction of `weights`'s domain where boolean `cond` is True."""
+    return (weights.where(cond, 0).sum() / total_weight).values
+
+def weighted_ratio(numerator_cond, denominator_cond, weights):
+    """Area-weighted sum where `numerator_cond` is True, divided by the area-weighted
+    sum where `denominator_cond` is True."""
+    num = weights.where(numerator_cond, 0).sum()
+    denom = weights.where(denominator_cond, 0).sum()
+    return (num / denom).values
+
 from statsmodels.distributions.empirical_distribution import ECDF
 
 def ecdf_func(ensemble, obs):
@@ -94,14 +114,23 @@ def ecdf_xr(ensemble, obs):
                           vectorize = True, ## required when function can only take 1D array
                          )
 
-def test_ecdf(model_trends, obs_trend):
+def test_ecdf(model_trends, obs_trend, weights = None):
+    """For each ensemble member left out in turn, tally (area-weighted) grid cells
+    where the left-out member's trend falls above/below the ECDF of the rest.
+
+    `weights` should be an area_weights(...) DataArray on the same grid as model_trends;
+    if not given, weights are computed per-member from that member's own valid domain.
+    """
     ecdf_dat = []
     for simname in model_trends.sim.values:
         a = xr.concat([model_trends.drop_sel(sim = simname), obs_trend.expand_dims({"sim": ["obs"]})], dim = "sim")
         b = model_trends.sel(sim = simname)
         x = ecdf_xr(a, b)
-        ecdf_dat.append([((b > 0) & (x == 0)).sum().values, ((b > 0) & (x == 1)).sum().values, (b > 0).sum().values, 
-                         ((b < 0) & (x == 0)).sum().values, ((b < 0) & (x == 1)).sum().values, b.count().values])
-    
+        w = area_weights(b.notnull()) if weights is None else weights.where(b.notnull(), 0.0)
+        ecdf_dat.append([w.where((b > 0) & (x == 0), 0).sum().values, w.where((b > 0) & (x == 1), 0).sum().values,
+                         w.where(b > 0, 0).sum().values,
+                         w.where((b < 0) & (x == 0), 0).sum().values, w.where((b < 0) & (x == 1), 0).sum().values,
+                         w.sum().values])
+
     ecdf_dat = pd.DataFrame(ecdf_dat, columns = ["pos_ecdf_0", "pos_ecdf_1", "pos_trends", "neg_ecdf_0", "neg_ecdf_1", "num_values"])
     return(ecdf_dat)

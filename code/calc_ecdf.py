@@ -39,6 +39,10 @@ combined_mask_dat = xr.open_dataset("../processed_data/combined_gauge_model_mask
 def combined_mask(ds):
     return(xr.where(combined_mask_dat.__xarray_dataarray_variable__ >= 2, ds, np.nan))
 
+## area (cos-latitude) weights, so leave-one-out ecdf tallies are area-weighted
+weights_land = _utils.area_weights(common_mask.__xarray_dataarray_variable__ == 1)
+weights_sub = _utils.area_weights(combined_mask_dat.__xarray_dataarray_variable__ >= 2)
+
 obs_trend = _utils.read_trends("../processed_data/", args.obs, args.var, start, end)
 model_trend = _utils.read_trends("../processed_data/", model, args.var, start, end)
 if (args.model == "cmip-sub") & (args.var == "rx1day"):
@@ -51,12 +55,12 @@ if not args.test:
     ecdf_result.to_netcdf("../processed_data/ecdf/"+args.obs+\
                           "_"+args.model+"_"+args.var+"_"+str(start)+"-"+str(end)+"_ecdf.nc")
 else: 
-    if args.obsmask: 
-        ecdf_test = _utils.test_ecdf(combined_mask(model_trend), combined_mask(obs_trend))
+    if args.obsmask:
+        ecdf_test = _utils.test_ecdf(combined_mask(model_trend), combined_mask(obs_trend), weights = weights_sub)
         ecdf_test.to_csv("../processed_data/ecdf/"+args.obs+"_"+args.model+\
                          "_"+args.var+"_"+str(start)+"-"+str(end)+"_ecdf_test_gauge_mask.csv")
-    else: 
-        ecdf_test = _utils.test_ecdf(model_mask(model_trend), model_mask(obs_trend))
+    else:
+        ecdf_test = _utils.test_ecdf(model_mask(model_trend), model_mask(obs_trend), weights = weights_land)
         ecdf_test.to_csv("../processed_data/ecdf/"+\
                          args.obs+"_"+args.model+"_"+args.var+"_"+str(start)+"-"+str(end)+"_ecdf_test.csv")
     
