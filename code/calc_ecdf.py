@@ -41,7 +41,7 @@ def combined_mask(ds):
 
 ## area (cos-latitude) weights, so leave-one-out ecdf tallies are area-weighted
 weights_land = _utils.area_weights(common_mask.__xarray_dataarray_variable__ == 1)
-weights_sub = _utils.area_weights(combined_mask_dat.__xarray_dataarray_variable__ >= 2)
+weights_sub = _utils.area_weights(combined_mask_dat.__xarray_dataarray_variable__ >= 2) ## used for quality-masked calculations
 
 obs_trend = _utils.read_trends("../processed_data/", args.obs, args.var, start, end)
 model_trend = _utils.read_trends("../processed_data/", model, args.var, start, end)
