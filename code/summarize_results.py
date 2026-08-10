@@ -23,7 +23,6 @@ def combined_mask(ds):
 
 ## area (cos-latitude) weights, so grid-cell tallies below are area-weighted
 weights_land = _utils.area_weights(common_mask.__xarray_dataarray_variable__ == 1)
-weights_sub = _utils.area_weights(combined_mask_dat.__xarray_dataarray_variable__ >= 2)
 
 print("calculating model positive trends - mon-p095")
 mon_pos_trends = [] 
@@ -40,7 +39,7 @@ for start in np.arange(1930, 1991, 1):
                                 "model": ["cmip"],
                                 "sim": [sim], 
                                 "pos_trends": weights_land.where(ds_all.sel(predictions = "coeff") > 0, 0).sum().values, 
-                                "pos_trends_gaugemask": weights_sub.where(ds_gaugemask.sel(predictions = "coeff") > 0, 0).sum().values})
+                                "pos_trends_gaugemask": weights_land.where(ds_gaugemask.sel(predictions = "coeff") > 0, 0).sum().values})
             mon_pos_trends.append(dat)
 
         for model in ["spear", "mesaclip"] : 
@@ -55,7 +54,7 @@ for start in np.arange(1930, 1991, 1):
                                     "model": [model],
                                     "sim": [sim], 
                                     "pos_trends": weights_land.where(ds_all.sel(predictions = "coeff") > 0, 0).sum().values, 
-                                    "pos_trends_gaugemask": weights_sub.where(ds_gaugemask.sel(predictions = "coeff") > 0, 0).sum().values})
+                                    "pos_trends_gaugemask": weights_land.where(ds_gaugemask.sel(predictions = "coeff") > 0, 0).sum().values})
                 mon_pos_trends.append(dat)
 mon_pos_trends = pd.concat(mon_pos_trends)
 mon_pos_trends.to_csv(file_dir+"model_positive_mon-p095_trends.csv")
@@ -75,7 +74,7 @@ for start in np.arange(1950, 1991, 1):
                                 "model": ["cmip"],
                                 "sim": [sim], 
                                 "pos_trends": weights_land.where(ds_all.sel(predictions = "coeff") > 0, 0).sum().values, 
-                                "pos_trends_gaugemask": weights_sub.where(ds_gaugemask.sel(predictions = "coeff") > 0, 0).sum().values})
+                                "pos_trends_gaugemask": weights_land.where(ds_gaugemask.sel(predictions = "coeff") > 0, 0).sum().values})
             day_pos_trends.append(dat)
 
         for model in ["spear", "mesaclip"] : 
@@ -90,7 +89,7 @@ for start in np.arange(1950, 1991, 1):
                                     "model": [model],
                                     "sim": [sim], 
                                     "pos_trends": weights_land.where(ds_all.sel(predictions = "coeff") > 0, 0).sum().values, 
-                                    "pos_trends_gaugemask": weights_sub.where(ds_gaugemask.sel(predictions = "coeff") > 0, 0).sum().values})
+                                    "pos_trends_gaugemask": weights_land.where(ds_gaugemask.sel(predictions = "coeff") > 0, 0).sum().values})
                 day_pos_trends.append(dat)
 day_pos_trends = pd.concat(day_pos_trends)
 day_pos_trends.to_csv(file_dir+"model_positive_rx1day_trends.csv")
@@ -108,7 +107,7 @@ for start in np.arange(1930, 1991, 1):
                                 "end_year": [end],
                                 "obs":[obs],
                                 "pos_trends": weights_land.where(obs_trend > 0, 0).sum().values,
-                                "pos_trends_gaugemask": weights_sub.where(combined_mask(obs_trend) > 0, 0).sum().values})
+                                "pos_trends_gaugemask": weights_land.where(combined_mask(obs_trend) > 0, 0).sum().values})
             mon_obs_pos_trends.append(dat)
         
 mon_obs_pos_trends = pd.concat(mon_obs_pos_trends)
@@ -133,7 +132,7 @@ for start in np.arange(1950, 1991, 1):
                                 "end_year": [end],
                                 "obs":[obs],
                                 "pos_trends": weights_land.where(obs_trend > 0, 0).sum().values, 
-                               "pos_trends_gaugemask": weights_sub.where(combined_mask(obs_trend) > 0, 0).sum().values})
+                               "pos_trends_gaugemask": weights_land.where(combined_mask(obs_trend) > 0, 0).sum().values})
             day_obs_pos_trends.append(dat)
         
 day_obs_pos_trends = pd.concat(day_obs_pos_trends)
@@ -160,10 +159,10 @@ for start in np.arange(1930, 1991, 1):
                                     "ecdf_pos_0": weights_land.where((obs_trend > 0) & (ecdf_dat == 0), 0).sum().values,
                                     "ecdf_neg_1": weights_land.where((obs_trend < 0) & (ecdf_dat == 1), 0).sum().values,
                                     "ecdf_neg_0": weights_land.where((obs_trend < 0) & (ecdf_dat == 0), 0).sum().values,
-                                    "ecdf_pos_1_mask": weights_sub.where((combined_mask(obs_trend) > 0) & (combined_mask(ecdf_dat) == 1), 0).sum().values,
-                                    "ecdf_pos_0_mask": weights_sub.where((combined_mask(obs_trend) > 0) & (combined_mask(ecdf_dat) == 0), 0).sum().values,
-                                    "ecdf_neg_1_mask": weights_sub.where((combined_mask(obs_trend) < 0) & (combined_mask(ecdf_dat) == 1), 0).sum().values,
-                                    "ecdf_neg_0_mask": weights_sub.where((combined_mask(obs_trend) < 0) & (combined_mask(ecdf_dat) == 0), 0).sum().values})
+                                    "ecdf_pos_1_mask": weights_land.where((combined_mask(obs_trend) > 0) & (combined_mask(ecdf_dat) == 1), 0).sum().values,
+                                    "ecdf_pos_0_mask": weights_land.where((combined_mask(obs_trend) > 0) & (combined_mask(ecdf_dat) == 0), 0).sum().values,
+                                    "ecdf_neg_1_mask": weights_land.where((combined_mask(obs_trend) < 0) & (combined_mask(ecdf_dat) == 1), 0).sum().values,
+                                    "ecdf_neg_0_mask": weights_land.where((combined_mask(obs_trend) < 0) & (combined_mask(ecdf_dat) == 0), 0).sum().values})
                 mon_summary.append(dat)
 mon_summary = pd.concat(mon_summary)
 mon_summary.to_csv(file_dir+"time_series_summary_mon-p095.csv")
@@ -195,10 +194,10 @@ for start in np.arange(1950, 1991, 1):
                                     "ecdf_pos_0": weights_land.where((obs_trend > 0) & (ecdf_dat == 0), 0).sum().values,
                                     "ecdf_neg_1": weights_land.where((obs_trend < 0) & (ecdf_dat == 1), 0).sum().values,
                                     "ecdf_neg_0": weights_land.where((obs_trend < 0) & (ecdf_dat == 0), 0).sum().values,
-                                   "ecdf_pos_1_mask": weights_sub.where((combined_mask(obs_trend) > 0) & (combined_mask(ecdf_dat) == 1), 0).sum().values,
-                                    "ecdf_pos_0_mask": weights_sub.where((combined_mask(obs_trend) > 0) & (combined_mask(ecdf_dat) == 0), 0).sum().values,
-                                    "ecdf_neg_1_mask": weights_sub.where((combined_mask(obs_trend) < 0) & (combined_mask(ecdf_dat) == 1), 0).sum().values,
-                                    "ecdf_neg_0_mask": weights_sub.where((combined_mask(obs_trend) < 0) & (combined_mask(ecdf_dat) == 0), 0).sum().values})
+                                   "ecdf_pos_1_mask": weights_land.where((combined_mask(obs_trend) > 0) & (combined_mask(ecdf_dat) == 1), 0).sum().values,
+                                    "ecdf_pos_0_mask": weights_land.where((combined_mask(obs_trend) > 0) & (combined_mask(ecdf_dat) == 0), 0).sum().values,
+                                    "ecdf_neg_1_mask": weights_land.where((combined_mask(obs_trend) < 0) & (combined_mask(ecdf_dat) == 1), 0).sum().values,
+                                    "ecdf_neg_0_mask": weights_land.where((combined_mask(obs_trend) < 0) & (combined_mask(ecdf_dat) == 0), 0).sum().values})
                 day_summary.append(dat)
         
 day_summary = pd.concat(day_summary)
