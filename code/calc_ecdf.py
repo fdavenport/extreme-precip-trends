@@ -41,7 +41,6 @@ def combined_mask(ds):
 
 ## area (cos-latitude) weights, so leave-one-out ecdf tallies are area-weighted
 weights_land = _utils.area_weights(common_mask.__xarray_dataarray_variable__ == 1)
-weights_sub = _utils.area_weights(combined_mask_dat.__xarray_dataarray_variable__ >= 2) ## used for quality-masked calculations
 
 obs_trend = _utils.read_trends("../processed_data/", args.obs, args.var, start, end)
 model_trend = _utils.read_trends("../processed_data/", model, args.var, start, end)
@@ -56,7 +55,7 @@ if not args.test:
                           "_"+args.model+"_"+args.var+"_"+str(start)+"-"+str(end)+"_ecdf.nc")
 else: 
     if args.obsmask:
-        ecdf_test = _utils.test_ecdf(combined_mask(model_trend), combined_mask(obs_trend), weights = weights_sub)
+        ecdf_test = _utils.test_ecdf(combined_mask(model_trend), combined_mask(obs_trend), weights = weights_land)
         ecdf_test.to_csv("../processed_data/ecdf/"+args.obs+"_"+args.model+\
                          "_"+args.var+"_"+str(start)+"-"+str(end)+"_ecdf_test_gauge_mask.csv")
     else:
