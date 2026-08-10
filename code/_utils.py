@@ -133,3 +133,35 @@ def test_ecdf(model_trends, obs_trend, weights):
 
     ecdf_dat = pd.DataFrame(ecdf_dat, columns = ["pos_ecdf_0", "pos_ecdf_1", "pos_trends", "neg_ecdf_0", "neg_ecdf_1", "num_values"])
     return(ecdf_dat)
+
+def test_ecdf_subsample(model_trends, obs_trend, N, weights, seed = 123):
+    """perform ecdf calculation on an N-member subsample of the original model ensemble
+    each simulation in original ensemble is compared to N-member subset of remaining ensemble
+    observed trend is also compared to that same subset 
+    
+    `weights` should be an area_weights(...) DataArray
+    """
+    np.random.seed(seed)
+    ecdf_dat = []
+    for simname in model_trends.sim.values:
+        ## select N-member subset of ensemble
+        ensemble_sub = model_trends.drop_sel(sim = simname)
+        ind = np.random.randint(0, len(ensemble_sub.sim), size = N)
+        a = ensemble_sub.isel(sim = ind)
+
+        ## select current ensemble member
+        b = model_trends.sel(sim = simname)
+
+        w = weights # for more concise lines below
+        
+        x = ecdf_xr(a, b) ## ensemble member ecdf
+        y = ecdf_xr(a, obs_trend) ## obs ecdf
+        ecdf_dat.append([w.where((b > 0) & (x == 0),0).sum().values, w.where((b > 0) & (x == 1),0).sum().values,
+                         w.where((b < 0) & (x == 0),0).sum().values, w.where((b < 0) & (x == 1),0).sum().values,
+                         w.where(b > 0, 0).sum().values, 
+                        w.where((obs_trend > 0) & (y == 0),0).sum().values, w.where((obs_trend > 0) & (y == 1),0).sum().values, 
+                        w.where((obs_trend < 0) & (y == 0),0).sum().values, w.where((obs_trend < 0) & (y == 1),0).sum().values])
+
+    ecdf_dat = pd.DataFrame(ecdf_dat, columns = ["sim_pos_ecdf_0", "sim_pos_ecdf_1", "sim_neg_ecdf_0", "sim_neg_ecdf_1", "sim_pos_trends", 
+                                                 "obs_pos_ecdf_0", "obs_pos_ecdf_1", "obs_neg_ecdf_0", "obs_neg_ecdf_1"])
+    return(ecdf_dat)
