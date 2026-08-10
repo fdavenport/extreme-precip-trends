@@ -125,7 +125,7 @@ def test_ecdf(model_trends, obs_trend, weights):
         a = xr.concat([model_trends.drop_sel(sim = simname), obs_trend.expand_dims({"sim": ["obs"]})], dim = "sim")
         b = model_trends.sel(sim = simname)
         x = ecdf_xr(a, b)
-        w = weights.where(b.notnull(), 0.0)
+        w = weights
         ecdf_dat.append([w.where((b > 0) & (x == 0), 0).sum().values, w.where((b > 0) & (x == 1), 0).sum().values,
                          w.where(b > 0, 0).sum().values,
                          w.where((b < 0) & (x == 0), 0).sum().values, w.where((b < 0) & (x == 1), 0).sum().values,
