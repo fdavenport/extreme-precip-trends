@@ -114,19 +114,18 @@ def ecdf_xr(ensemble, obs):
                           vectorize = True, ## required when function can only take 1D array
                          )
 
-def test_ecdf(model_trends, obs_trend, weights = None):
+def test_ecdf(model_trends, obs_trend, weights):
     """For each ensemble member left out in turn, tally (area-weighted) grid cells
     where the left-out member's trend falls above/below the ECDF of the rest.
 
-    `weights` should be an area_weights(...) DataArray on the same grid as model_trends;
-    if not given, weights are computed per-member from that member's own valid domain.
+    `weights` should be an area_weights(...) DataArray
     """
     ecdf_dat = []
     for simname in model_trends.sim.values:
         a = xr.concat([model_trends.drop_sel(sim = simname), obs_trend.expand_dims({"sim": ["obs"]})], dim = "sim")
         b = model_trends.sel(sim = simname)
         x = ecdf_xr(a, b)
-        w = area_weights(b.notnull()) if weights is None else weights.where(b.notnull(), 0.0)
+        w = weights.where(b.notnull(), 0.0)
         ecdf_dat.append([w.where((b > 0) & (x == 0), 0).sum().values, w.where((b > 0) & (x == 1), 0).sum().values,
                          w.where(b > 0, 0).sum().values,
                          w.where((b < 0) & (x == 0), 0).sum().values, w.where((b < 0) & (x == 1), 0).sum().values,
