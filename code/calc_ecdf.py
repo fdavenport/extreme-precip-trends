@@ -8,7 +8,6 @@ from pathlib import Path
 import _utils
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--overwrite', action='store_true') #don't overwrite unless overwrite specified
 parser.add_argument('--obsmask', action='store_true') #use obs mask if specified
 parser.add_argument('--test', action='store_true') #specify whether to do test or regular calculation
 parser.add_argument('--start', type=int)
