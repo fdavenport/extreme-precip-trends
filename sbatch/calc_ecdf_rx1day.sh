@@ -7,7 +7,7 @@
 #SBATCH --ntasks=4
 #SBATCH --time=3:00:00
 #SBATCH --array=0-40%16
-#SBATCH --partition=all
+#SBATCH --partition=dav_all
 
 
 cd /davenport-scratch/fvdav22/projects/extreme-precip-trends
@@ -25,15 +25,15 @@ for end_year in $(seq $((start_year + 30)) 2020); do
        python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="regen" --model="mesaclip" --var="rx1day" --overwrite
     fi
     
-#    if [ "$start_year" -ge 1979 ]; then
-#       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="cpc" --model="cmip-sub" --var="rx1day"
-#       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="cpc" --model="spear" --var="rx1day"
-#       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="cpc" --model="mesaclip" --var="rx1day"
+    if [ "$start_year" -ge 1979 ]; then
+       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="cpc" --model="cmip-sub" --var="rx1day"
+       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="cpc" --model="spear" --var="rx1day"
+       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="cpc" --model="mesaclip" --var="rx1day"
        
-#       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="mswep" --model="cmip-sub" --var="rx1day"
-#       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="mswep" --model="spear" --var="rx1day"
-#       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="mswep" --model="mesaclip" --var="rx1day"
-#    fi
+       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="mswep" --model="cmip-sub" --var="rx1day"
+       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="mswep" --model="spear" --var="rx1day"
+       python -u ./calc_ecdf.py --start=$start_year --end=$end_year --obs="mswep" --model="mesaclip" --var="rx1day"
+    fi
 
 done
 
