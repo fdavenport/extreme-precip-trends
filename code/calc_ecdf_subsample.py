@@ -22,7 +22,7 @@ weights_land = _utils.area_weights(common_mask.__xarray_dataarray_variable__ == 
 start = 1979
 end = 2020
 
-for ensemble in ["cmip", "spear"]:
+for ensemble in ["cmip-sub", "spear"]:
     print(ensemble)
     model_trend = mask(_utils.read_trends(file_dir, ensemble, "rx1day", start, end))
     
@@ -39,7 +39,7 @@ for ensemble in ["cmip", "spear"]:
 start = 1979
 end = 2020
 
-for ensemble in ["cmip", "spear"]:
+for ensemble in ["cmip-sub", "spear"]:
     print(ensemble)
     model_trend = mask(_utils.read_trends(file_dir, ensemble, "mon-p095", start, end))
     
