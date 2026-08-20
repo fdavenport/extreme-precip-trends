@@ -136,7 +136,7 @@ def test_ecdf(model_trends, obs_trend, weights):
 
 def test_ecdf_subsample(model_trends, obs_trend, N, weights, seed = 123):
     """perform ecdf calculation on an N-member subsample of the original model ensemble
-    each simulation in original ensemble is compared to N-member subset of remaining ensemble
+    each simulation in original ensemble is compared to (N-1)-member subset of remaining ensemble plus observations
     observed trend is also compared to that same subset 
     
     `weights` should be an area_weights(...) DataArray
@@ -146,16 +146,21 @@ def test_ecdf_subsample(model_trends, obs_trend, N, weights, seed = 123):
     for simname in model_trends.sim.values:
         ## select N-member subset of ensemble
         ensemble_sub = model_trends.drop_sel(sim = simname)
-        ind = np.random.randint(0, len(ensemble_sub.sim), size = N)
-        a = ensemble_sub.isel(sim = ind)
+        idx = np.random.randint(0, len(ensemble_sub.sim), size = (N-1))
+        ## select N-1 subset
+        a = ensemble_sub.isel(sim = idx)
 
         ## select current ensemble member
         b = model_trends.sel(sim = simname)
 
+        ## combine subset with sim and obs for comparison
+        a_obs = xr.concat([a, obs_trend.expand_dims({"sim": ["obs"]})], dim = "sim")
+        a_sim = xr.concat([a, b], dim = "sim")
+
         w = weights # for more concise lines below
         
-        x = ecdf_xr(a, b) ## ensemble member ecdf
-        y = ecdf_xr(a, obs_trend) ## obs ecdf
+        x = ecdf_xr(a_obs, b) ## ensemble member ecdf
+        y = ecdf_xr(a_sim, obs_trend) ## obs ecdf
         ecdf_dat.append([w.where((b > 0) & (x == 0),0).sum().values, w.where((b > 0) & (x == 1),0).sum().values,
                          w.where((b < 0) & (x == 0),0).sum().values, w.where((b < 0) & (x == 1),0).sum().values,
                          w.where(b > 0, 0).sum().values, 
