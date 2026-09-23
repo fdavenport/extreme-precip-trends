@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/924252142.svg)](https://doi.org/10.5281/zenodo.22908325)
+
 ## Repository Organization
 * **input_data**: placeholder directory for raw data (data not included due to file size but is publicly available, see more info below)
 * **code**: jupyter notebooks and python scripts to read and pre-process data and perform analysis
